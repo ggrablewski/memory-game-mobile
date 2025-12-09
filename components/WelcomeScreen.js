@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView,
 import Slider from '@react-native-community/slider';
 
 const KOMPUTER_NAME_LIST = [
-  "RZUF", "Fred", "Bolec", "Cwaniak", "Gigantus",
-  "Pułkownik UB", "Brutus", "Cezar", "Reżyser kina akcji", "Waldek"
+  "Jaś Fasola", "Manny", "Fragley", "Rodrick", "Rowley", "Cwaniaczek Greg", 
+  "Jeż Sonic", "Kaczka Katastrofa", "Pies Pypeć", "Pan Kuleczka"
 ];
 
 export default function WelcomeScreen({ onStartGame, previousSettings }) {
@@ -13,8 +13,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
   const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
   const [coverColor, setCoverColor] = useState(previousSettings?.coverColor || 'red');
   const [withComputer, setWithComputer] = useState(previousSettings?.withComputer || false);
-  const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 50);
-  const [showIntro, setShowIntro] = useState(previousSettings?.showIntro !== undefined ? previousSettings.showIntro : true);
+  const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
   const [humanName, setHumanName] = useState(previousSettings?.withComputer ? previousSettings.player1Name : previousSettings?.player2Name || 'Tato');
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
 
@@ -44,8 +43,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
       boardSize,
       coverColor,
       withComputer,
-      difficulty,
-      showIntro: withComputer && showIntro
+      difficulty
     };
     onStartGame(settings);
   };
@@ -147,19 +145,6 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
               thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
             />
             <Text style={styles.checkboxLabel}>Gram z komputerem</Text>
-          </View>
-
-          <View style={styles.checkboxRow}>
-            <Switch
-              value={showIntro}
-              onValueChange={setShowIntro}
-              disabled={!withComputer}
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={showIntro ? '#007AFF' : '#f4f3f4'}
-            />
-            <Text style={[styles.checkboxLabel, !withComputer && styles.disabledText]}>
-              Pokaż intro
-            </Text>
           </View>
 
           <View style={styles.sliderContainer}>

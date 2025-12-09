@@ -1,21 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
-import { Audio, Video } from 'expo-av';
+import { Audio } from 'expo-av';
 import Card from './Card';
 
 const ROZMIARY = { '4': [4, 3], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
-const KOMPUTER_FILM_LIST = {
-  0: [require('../assets/sounds/rzuf.mp4')],
-  1: [require('../assets/sounds/fred.mp4')],
-  2: [require('../assets/sounds/bolec.mp4')],
-  3: [require('../assets/sounds/cwaniak.mp4')],
-  4: [require('../assets/sounds/gigantus.mp4')],
-  5: [require('../assets/sounds/pulkownik.mp4')],
-  6: [require('../assets/sounds/brutus.mp4')],
-  7: [require('../assets/sounds/cezar.mp4')],
-  8: [require('../assets/sounds/rezyser1.mp4'), require('../assets/sounds/rezyser2.mp4')],
-  9: [require('../assets/sounds/waldek.mp4')]
-};
 
 const losuj = (max) => Math.floor(Math.random() * max);
 const numer = (x) => x.toString().padStart(2, "0");
@@ -39,14 +27,11 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const [remainingPairs, setRemainingPairs] = useState(0);
   const [memory, setMemory] = useState([]);
   const [possibleMoves, setPossibleMoves] = useState([]);
-  const [gameReady, setGameReady] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-  const [videoSource, setVideoSource] = useState(null);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
   const computerMoveInProgress = useRef(false);
   const currentFlippedCards = useRef([]);
 
   const audioRefs = useRef({});
-  const videoRef = useRef(null);
 
   const boardSize = ROZMIARY[settings.boardSize];
   const [cols, rows] = boardSize;
@@ -66,8 +51,11 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
         audioRefs.current.wrong = await Audio.Sound.createAsync(require('../assets/sounds/bounce_2.mp3'));
         audioRefs.current.correct = await Audio.Sound.createAsync(require('../assets/sounds/dog.mp3'));
         audioRefs.current.cheers = await Audio.Sound.createAsync(require('../assets/sounds/cheers.mp3'));
+
+        setSoundsLoaded(true);
       } catch (error) {
         console.error('Error loading sounds:', error);
+        setSoundsLoaded(true); // Kontynuuj mimo błędu
       }
     };
 
@@ -108,26 +96,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   }, [totalCards]);
 
   useEffect(() => {
-    if (settings.showIntro && settings.withComputer) {
-      const level = Math.floor(Math.min(settings.difficulty, 99) / 10);
-      const films = KOMPUTER_FILM_LIST[level];
-      const film = films[losuj(films.length)];
-      setVideoSource(film);
-      setShowVideo(true);
-    } else {
-      setGameReady(true);
-    }
-  }, [settings]);
-
-  const handleVideoEnd = () => {
-    setTimeout(() => {
-      setShowVideo(false);
-      setGameReady(true);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    if (!gameReady) return;
+    if (!soundsLoaded) return;
 
     const cardValues = prepareCards();
     const newCards = cardValues.map((value, index) => ({
@@ -146,7 +115,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       const moves = shuffleArray(newCards.map(card => card.id));
       setPossibleMoves(moves);
     }
-  }, [gameReady, prepareCards, totalCards, cols, settings.withComputer]);
+  }, [soundsLoaded, prepareCards, totalCards, cols, settings.withComputer]);
 
   const isComputerTurn = useCallback(() => {
     return settings.withComputer && currentPlayer === 2;
@@ -321,28 +290,6 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     }
   }, [isComputerTurn, isClickable, flippedCards.length, cards, memory, possibleMoves, handleCardClick]);
 
-  if (!gameReady) {
-    return (
-      <View style={styles.videoContainer}>
-        {showVideo && videoSource && (
-          <Video
-            ref={videoRef}
-            source={videoSource}
-            style={styles.video}
-            useNativeControls={false}
-            shouldPlay
-            resizeMode="contain"
-            onPlaybackStatusUpdate={(status) => {
-              if (status.didJustFinish) {
-                handleVideoEnd();
-              }
-            }}
-          />
-        )}
-      </View>
-    );
-  }
-
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
@@ -401,16 +348,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-  },
-  videoContainer: {
-    flex: 1,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  video: {
-    width: '100%',
-    height: '100%',
   },
   modalOverlay: {
     flex: 1,
