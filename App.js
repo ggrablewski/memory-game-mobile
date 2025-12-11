@@ -16,16 +16,11 @@ export default function App() {
 
   useEffect(() => {
     async function setOrientation() {
-      if (gameStarted) {
-        // Gra w trybie landscape
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-      } else {
-        // Menu w trybie portrait
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-      }
+      // Aplikacja zawsze działa w trybie portrait
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
     }
     setOrientation();
-  }, [gameStarted]);
+  }, []);
 
   const startGame = (settings) => {
     setGameSettings(settings);
@@ -49,7 +44,7 @@ export default function App() {
   };
 
   const switchPlayer = () => {
-    setCurrentPlayer(prev => prev === 1 ? 2 : 1);
+    setCurrentPlayer(prev => 3 - prev);
   };
 
   if (!imagesLoaded) {

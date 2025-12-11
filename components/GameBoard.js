@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'rea
 import { Audio } from 'expo-av';
 import Card from './Card';
 
-const ROZMIARY = { '4': [4, 3], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
+const ROZMIARY = { '4': [3, 4], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
 
 const losuj = (max) => Math.floor(Math.random() * max);
 const numer = (x) => x.toString().padStart(2, "0");
@@ -147,7 +147,13 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     }, 1000);
   }, [currentPlayer, playerNames, onSwitchPlayer]);
 
-  const handleCardClick = useCallback((cardId) => {
+  const handleCardClick = useCallback((cardId, isComputerMove = false) => {
+    // Blokuj kliknięcia użytkownika podczas komunikatu lub ruchu komputera
+    // Ale pozwól komputerowi wykonać ruch
+    if (!isComputerMove && (showMessage !== null || isComputerTurn())) {
+      return;
+    }
+
     if (!isClickable && !isComputerTurn()) return;
     if (currentFlippedCards.current.includes(cardId) || matchedCards.includes(cardId)) return;
 
@@ -228,7 +234,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
         }
       }, 1000);
     }
-  }, [isClickable, isComputerTurn, matchedCards, cards, settings, remainingPairs, currentPlayer, onIncrementScore, endGame, showPlayerChange, scores]);
+  }, [isClickable, isComputerTurn, matchedCards, cards, settings, remainingPairs, currentPlayer, onIncrementScore, endGame, showPlayerChange, scores, showMessage]);
 
   useEffect(() => {
     if (isComputerTurn() && isClickable && flippedCards.length === 0 && cards.length > 0 && !computerMoveInProgress.current) {
@@ -256,25 +262,25 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
         const pairCardValue = findPairInMemory();
         if (pairCardValue !== -1 && memory[pairCardValue].length === 2) {
           const ids = [...memory[pairCardValue]];
-          handleCardClick(ids[0]);
+          handleCardClick(ids[0], true);
           setTimeout(() => {
-            handleCardClick(ids[1]);
+            handleCardClick(ids[1], true);
             computerMoveInProgress.current = false;
           }, 1000);
         } else if (possibleMoves.length > 0) {
           const firstCardId = possibleMoves[0];
           const firstCard = cards.find(c => c.id === firstCardId);
           if (firstCard) {
-            handleCardClick(firstCardId);
+            handleCardClick(firstCardId, true);
             const otherId = findOtherCard(firstCard.value, firstCardId);
             if (otherId !== -1) {
               setTimeout(() => {
-                handleCardClick(otherId);
+                handleCardClick(otherId, true);
                 computerMoveInProgress.current = false;
               }, 1000);
             } else if (possibleMoves.length > 1) {
               setTimeout(() => {
-                handleCardClick(possibleMoves[1]);
+                handleCardClick(possibleMoves[1], true);
                 computerMoveInProgress.current = false;
               }, 1000);
             } else {
@@ -294,19 +300,33 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const screenHeight = Dimensions.get('window').height;
 
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
-  // Odejmujemy header (około 40px) i trochę marginesu
-  const availableHeight = screenHeight - 60;
+  // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
+  const headerHeight = 130;
+  const bottomMargin = 30; // Margines na dolne ikony systemowe
+  const availableHeight = screenHeight - headerHeight - bottomMargin;
   const availableWidth = screenWidth - 20;
 
   const cardSizeByWidth = availableWidth / cols;
   const cardSizeByHeight = availableHeight / rows;
   const cardSize = Math.min(cardSizeByWidth, cardSizeByHeight) - 4; // -4 dla marginesów
 
+  const boardHeight = rows * cardSize;
+  const boardWidth = cols * cardSize;
+  const verticalMargin = (availableHeight - boardHeight - 40) / 2;
+
   return (
     <View style={styles.container}>
-      <View style={[styles.board, { width: cols * cardSize }]}>
+      <View style={[styles.board, {
+        width: boardWidth,
+        height: boardHeight,
+        marginTop: verticalMargin
+      }]}>
         {cards.map(card => (
-          <View key={card.id} style={{ width: cardSize, height: cardSize }}>
+          <View
+            key={card.id}
+            style={{ width: cardSize, height: cardSize }}
+            pointerEvents={(showMessage !== null || isComputerTurn()) ? 'none' : 'auto'}
+          >
             <Card
               card={card}
               isFlipped={flippedCards.includes(card.id)}
@@ -342,12 +362,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'top',
   },
   modalOverlay: {
     flex: 1,
