@@ -49,126 +49,130 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.form}>
-        {/* Player names */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Imię gracza 1</Text>
-          <TextInput
-            style={styles.input}
-            value={player1Name}
-            onChangeText={setPlayer1Name}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Imię gracza 2</Text>
-          <TextInput
-            style={[styles.input, withComputer && styles.inputDisabled]}
-            value={player2Name}
-            onChangeText={setPlayer2Name}
-            editable={!withComputer}
-          />
-        </View>
-
-        {/* Board size */}
-        <View style={styles.section}>
-          <Text style={styles.legend}>Rozmiar planszy</Text>
-          <View style={styles.radioGroup}>
-            <TouchableOpacity
-              style={styles.radioButton}
-              onPress={() => setBoardSize('4')}
-            >
-              <View style={[styles.radio, boardSize === '4' && styles.radioSelected]} />
-              <Text style={styles.radioLabel}>4×3</Text>
-              <Image source={require('../assets/images/4x3_transparent.png')} style={styles.boardImage} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.radioButton}
-              onPress={() => setBoardSize('6')}
-            >
-              <View style={[styles.radio, boardSize === '6' && styles.radioSelected]} />
-              <Text style={styles.radioLabel}>6×5</Text>
-              <Image source={require('../assets/images/6x5_transparent.png')} style={styles.boardImage} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.radioButton}
-              onPress={() => setBoardSize('9')}
-            >
-              <View style={[styles.radio, boardSize === '9' && styles.radioSelected]} />
-              <Text style={styles.radioLabel}>9×6</Text>
-              <Image source={require('../assets/images/9x6_transparent.png')} style={styles.boardImage} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.radioButton}
-              onPress={() => setBoardSize('10')}
-            >
-              <View style={[styles.radio, boardSize === '10' && styles.radioSelected]} />
-              <Text style={styles.radioLabel}>10×8</Text>
-              <Image source={require('../assets/images/10x8_transparent.png')} style={styles.boardImage} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Cover color */}
-        <View style={styles.section}>
-          <Text style={styles.legend}>Kolor okładki</Text>
-          <View style={styles.coverGroup}>
-            <TouchableOpacity
-              style={styles.coverButton}
-              onPress={() => setCoverColor('red')}
-            >
-              <View style={[styles.radio, coverColor === 'red' && styles.radioSelected]} />
-              <Image source={require('../assets/images/cover_red.png')} style={styles.coverImage} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.coverButton}
-              onPress={() => setCoverColor('blue')}
-            >
-              <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
-              <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Computer options */}
-        <View style={styles.section}>
-          <View style={styles.checkboxRow}>
-            <Switch
-              value={withComputer}
-              onValueChange={handleComputerToggle}
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
-            />
-            <Text style={styles.checkboxLabel}>Gram z komputerem</Text>
-          </View>
-
-          <View style={styles.sliderContainer}>
-            <Text style={[styles.label, !withComputer && styles.disabledText]}>
-              Poziom trudności: {Math.round(difficulty)}%
-            </Text>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={100}
-              value={difficulty}
-              onValueChange={setDifficulty}
-              disabled={!withComputer}
-              minimumTrackTintColor="#007AFF"
-              maximumTrackTintColor="#000000"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <View style={styles.form}>
+          {/* Player names */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Imię gracza 1</Text>
+            <TextInput
+              style={styles.input}
+              value={player1Name}
+              onChangeText={setPlayer1Name}
             />
           </View>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Imię gracza 2</Text>
+            <TextInput
+              style={[styles.input, withComputer && styles.inputDisabled]}
+              value={player2Name}
+              onChangeText={setPlayer2Name}
+              editable={!withComputer}
+            />
+          </View>
+
+          {/* Board size */}
+          <View style={styles.section}>
+            <Text style={styles.legend}>Rozmiar planszy</Text>
+            <View style={styles.radioGroup}>
+              <TouchableOpacity
+                style={styles.radioButton}
+                onPress={() => setBoardSize('4')}
+              >
+                <View style={[styles.radio, boardSize === '4' && styles.radioSelected]} />
+                <Text style={styles.radioLabel}>4×3</Text>
+                <Image source={require('../assets/images/4x3_transparent.png')} style={styles.boardImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.radioButton}
+                onPress={() => setBoardSize('6')}
+              >
+                <View style={[styles.radio, boardSize === '6' && styles.radioSelected]} />
+                <Text style={styles.radioLabel}>6×5</Text>
+                <Image source={require('../assets/images/6x5_transparent.png')} style={styles.boardImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.radioButton}
+                onPress={() => setBoardSize('9')}
+              >
+                <View style={[styles.radio, boardSize === '9' && styles.radioSelected]} />
+                <Text style={styles.radioLabel}>9×6</Text>
+                <Image source={require('../assets/images/9x6_transparent.png')} style={styles.boardImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.radioButton}
+                onPress={() => setBoardSize('10')}
+              >
+                <View style={[styles.radio, boardSize === '10' && styles.radioSelected]} />
+                <Text style={styles.radioLabel}>10×8</Text>
+                <Image source={require('../assets/images/10x8_transparent.png')} style={styles.boardImage} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Cover color */}
+          <View style={styles.section}>
+            <Text style={styles.legend}>Kolor okładki</Text>
+            <View style={styles.coverGroup}>
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setCoverColor('red')}
+              >
+                <View style={[styles.radio, coverColor === 'red' && styles.radioSelected]} />
+                <Image source={require('../assets/images/cover_red.png')} style={styles.coverImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setCoverColor('blue')}
+              >
+                <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
+                <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Computer options */}
+          <View style={styles.section}>
+            <View style={styles.checkboxRow}>
+              <Switch
+                value={withComputer}
+                onValueChange={handleComputerToggle}
+                trackColor={{ false: '#767577', true: '#81b0ff' }}
+                thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
+              />
+              <Text style={styles.checkboxLabel}>Gram z komputerem</Text>
+            </View>
+
+            <View style={styles.sliderContainer}>
+              <Text style={[styles.label, !withComputer && styles.disabledText]}>
+                Poziom trudności: {Math.round(difficulty)}%
+              </Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={100}
+                value={difficulty}
+                onValueChange={setDifficulty}
+                disabled={!withComputer}
+                minimumTrackTintColor="#007AFF"
+                maximumTrackTintColor="#000000"
+              />
+            </View>
+          </View>
         </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.startButton} onPress={handleStart}>
+          <Text style={styles.startButtonText}>Zaczynamy!</Text>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.startButton} onPress={handleStart}>
-        <Text style={styles.startButtonText}>Zaczynamy!</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -176,15 +180,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollView: {
+    flex: 1,
+  },
   contentContainer: {
     padding: 15,
-    paddingBottom: 30,
+    paddingBottom: 15,
+  },
+  footer: {
+    padding: 15,
+    paddingBottom: 40,
+    backgroundColor: 'transparent',
   },
   form: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 15,
     padding: 20,
-    marginBottom: 20,
   },
   section: {
     marginBottom: 15,
@@ -286,7 +297,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-    marginBottom: 40,
   },
   startButtonText: {
     color: 'white',
