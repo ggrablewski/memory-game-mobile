@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
-import { Audio } from 'expo-av';
 import Card from './Card';
 
-const ROZMIARY = { '4': [3, 4], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
+const ROZMIARY_PORTRAIT = { '4': [3, 4], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
+const ROZMIARY_LANDSCAPE = { '4': [4, 3], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
 
 const losuj = (max) => Math.floor(Math.random() * max);
 const numer = (x) => x.toString().padStart(2, "0");
@@ -18,7 +18,7 @@ const shuffleArray = (array) => {
   return arr;
 };
 
-export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame }) {
+export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame, isPhone, soundsLoaded, audioRefs }) {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -27,56 +27,18 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const [remainingPairs, setRemainingPairs] = useState(0);
   const [memory, setMemory] = useState([]);
   const [possibleMoves, setPossibleMoves] = useState([]);
-  const [soundsLoaded, setSoundsLoaded] = useState(false);
   const computerMoveInProgress = useRef(false);
   const currentFlippedCards = useRef([]);
 
-  const audioRefs = useRef({});
-
+  // Wybierz rozmiary w zależności od typu urządzenia
+  const ROZMIARY = isPhone ? ROZMIARY_PORTRAIT : ROZMIARY_LANDSCAPE;
   const boardSize = ROZMIARY[settings.boardSize];
   const [cols, rows] = boardSize;
   const totalCards = cols * rows;
 
-  // Load sounds
-  useEffect(() => {
-    const loadSounds = async () => {
-      try {
-        await Audio.setAudioModeAsync({
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
-        });
-
-        audioRefs.current.start = await Audio.Sound.createAsync(require('../assets/sounds/start.mp3'));
-        audioRefs.current.uncover = await Audio.Sound.createAsync(require('../assets/sounds/bounce_1.mp3'));
-        audioRefs.current.wrong = await Audio.Sound.createAsync(require('../assets/sounds/bounce_2.mp3'));
-        audioRefs.current.correct = await Audio.Sound.createAsync(require('../assets/sounds/dog.mp3'));
-        audioRefs.current.cheers = await Audio.Sound.createAsync(require('../assets/sounds/cheers.mp3'));
-
-        setSoundsLoaded(true);
-      } catch (error) {
-        console.error('Error loading sounds:', error);
-        setSoundsLoaded(true); // Kontynuuj mimo błędu
-      }
-    };
-
-    loadSounds();
-
-    return () => {
-      Object.values(audioRefs.current).forEach(async (sound) => {
-        if (sound?.sound) {
-          try {
-            await sound.sound.unloadAsync();
-          } catch (error) {
-            console.error('Error unloading sound:', error);
-          }
-        }
-      });
-    };
-  }, []);
-
   const playSound = async (soundName) => {
     try {
-      const soundObj = audioRefs.current[soundName];
+      const soundObj = audioRefs[soundName];
       if (soundObj?.sound) {
         await soundObj.sound.replayAsync();
       }
@@ -96,8 +58,6 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   }, [totalCards]);
 
   useEffect(() => {
-    if (!soundsLoaded) return;
-
     const cardValues = prepareCards();
     const newCards = cardValues.map((value, index) => ({
       id: index,
@@ -107,6 +67,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     }));
     setCards(newCards);
     setRemainingPairs(totalCards / 2);
+
     playSound('start');
 
     if (settings.withComputer) {
@@ -115,7 +76,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       const moves = shuffleArray(newCards.map(card => card.id));
       setPossibleMoves(moves);
     }
-  }, [soundsLoaded, prepareCards, totalCards, cols, settings.withComputer]);
+  }, [prepareCards, totalCards, cols, settings.withComputer, soundsLoaded]);
 
   const isComputerTurn = useCallback(() => {
     return settings.withComputer && currentPlayer === 2;
@@ -128,7 +89,8 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       message = 'REMIS !!!';
     } else {
       const winner = finalScores.player1 > finalScores.player2 ? playerNames.player1 : playerNames.player2;
-      const koncowka = ['a', 'A'].includes(winner[winner.length - 1]) ? 'a' : '';
+      const firstWord = winner.split(' ')[0];
+      const koncowka = ['a', 'A'].includes(firstWord[firstWord.length - 1]) ? 'a' : '';
       message = `Wygrał${koncowka}\n${winner}`;
     }
     setShowMessage({ type: 'endGame', text: message });
@@ -301,18 +263,19 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
-  const headerHeight = 130;
-  const bottomMargin = 30; // Margines na dolne ikony systemowe
-  const availableHeight = screenHeight - headerHeight - bottomMargin;
+  const headerHeight = isPhone ? 130 : 100;
+  const bottomMargin = isPhone ? 30 : 0; // Margines na dolne ikony systemowe
+  const availableHeight = screenHeight - headerHeight - bottomMargin + 40;
   const availableWidth = screenWidth - 20;
 
   const cardSizeByWidth = availableWidth / cols;
   const cardSizeByHeight = availableHeight / rows;
-  const cardSize = Math.min(cardSizeByWidth, cardSizeByHeight) - 4; // -4 dla marginesów
+  let cardSize = Math.min(cardSizeByWidth, cardSizeByHeight);
 
   const boardHeight = rows * cardSize;
   const boardWidth = cols * cardSize;
-  const verticalMargin = (availableHeight - boardHeight - 40) / 2;
+  cardSize = cardSize - 4; // -4 dla marginesów
+  const verticalMargin = isPhone ? (availableHeight - boardHeight - 40) / 2 :  (availableHeight - boardHeight) / 2;
 
   return (
     <View style={styles.container}>
@@ -324,7 +287,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
         {cards.map(card => (
           <View
             key={card.id}
-            style={{ width: cardSize, height: cardSize }}
+            style={{ width: cardSize, height: cardSize, margin: 1 }}
             pointerEvents={(showMessage !== null || isComputerTurn()) ? 'none' : 'auto'}
           >
             <Card
@@ -367,7 +330,7 @@ const styles = StyleSheet.create({
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'top',
+    justifyContent: 'center',
   },
   modalOverlay: {
     flex: 1,

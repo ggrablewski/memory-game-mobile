@@ -3,11 +3,25 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView,
 import Slider from '@react-native-community/slider';
 
 const KOMPUTER_NAME_LIST = [
-  "Jaś Fasola", "Manny", "Fragley", "Rodrick", "Rowley", "Cwaniaczek Greg", 
-  "Jeż Sonic", "Kaczka Katastrofa", "Pies Pypeć", "Pan Kuleczka"
+  "Kleofas", "Euzebiusz", "Rufus", "Gotfryd", "Alcest", "Mikołajek", 
+  "Ananiasz", "Kaczka Katastrofa", "Pies Pypeć", "Pan Kuleczka"
 ];
 
-export default function WelcomeScreen({ onStartGame, previousSettings }) {
+const SIZE_OPTIONS_PORTRAIT = [
+  { name: "3×4", image: require('../assets/images/3x4_transparent.png') },
+  { name: "5×6", image: require('../assets/images/5x6_transparent.png') },
+  { name: "6×9", image: require('../assets/images/6x9_transparent.png') },
+  { name: "8×10", image: require('../assets/images/8x10_transparent.png') }
+];
+
+const SIZE_OPTIONS_LANDSCAPE = [
+  { name: "4×3", image: require('../assets/images/4x3_transparent.png') },
+  { name: "6×5", image: require('../assets/images/6x5_transparent.png') },
+  { name: "9×6", image: require('../assets/images/9x6_transparent.png') },
+  { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
+];
+
+export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }) {
   const [player1Name, setPlayer1Name] = useState(previousSettings?.player1Name || 'Ignaś');
   const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || 'Tato');
   const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
@@ -16,6 +30,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
   const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
   const [humanName, setHumanName] = useState(previousSettings?.withComputer ? previousSettings.player1Name : previousSettings?.player2Name || 'Tato');
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
+
+  const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
 
   useEffect(() => {
     const newComputerName = KOMPUTER_NAME_LIST[Math.floor(Math.min(difficulty, 99) / 10)];
@@ -51,18 +67,16 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.form}>
+        <View style={[styles.form, !isPhone && styles.formLandscape]}>
           {/* Player names */}
-          <View style={styles.section}>
+          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
+            <Text style={styles.legend}>Gracze</Text>
             <Text style={styles.label}>Imię gracza 1</Text>
             <TextInput
               style={styles.input}
               value={player1Name}
               onChangeText={setPlayer1Name}
             />
-          </View>
-
-          <View style={styles.section}>
             <Text style={styles.label}>Imię gracza 2</Text>
             <TextInput
               style={[styles.input, withComputer && styles.inputDisabled]}
@@ -73,7 +87,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
           </View>
 
           {/* Board size */}
-          <View style={styles.section}>
+          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
             <Text style={styles.legend}>Rozmiar planszy</Text>
             <View style={styles.radioGroup}>
               <TouchableOpacity
@@ -81,8 +95,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
                 onPress={() => setBoardSize('4')}
               >
                 <View style={[styles.radio, boardSize === '4' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>4×3</Text>
-                <Image source={require('../assets/images/4x3_transparent.png')} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[0].name}</Text>
+                <Image source={SIZE_OPTIONS[0].image} style={styles.boardImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -90,8 +104,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
                 onPress={() => setBoardSize('6')}
               >
                 <View style={[styles.radio, boardSize === '6' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>6×5</Text>
-                <Image source={require('../assets/images/6x5_transparent.png')} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[1].name}</Text>
+                <Image source={SIZE_OPTIONS[1].image} style={styles.boardImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -99,8 +113,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
                 onPress={() => setBoardSize('9')}
               >
                 <View style={[styles.radio, boardSize === '9' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>9×6</Text>
-                <Image source={require('../assets/images/9x6_transparent.png')} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[2].name}</Text>
+                <Image source={SIZE_OPTIONS[2].image} style={styles.boardImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -108,16 +122,16 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
                 onPress={() => setBoardSize('10')}
               >
                 <View style={[styles.radio, boardSize === '10' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>10×8</Text>
-                <Image source={require('../assets/images/10x8_transparent.png')} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[3].name}</Text>
+                <Image source={SIZE_OPTIONS[3].image} style={styles.boardImage} />
               </TouchableOpacity>
             </View>
           </View>
 
           {/* Cover color */}
-          <View style={styles.section}>
+          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
             <Text style={styles.legend}>Kolor okładki</Text>
-            <View style={styles.coverGroup}>
+            <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
               <TouchableOpacity
                 style={styles.coverButton}
                 onPress={() => setCoverColor('red')}
@@ -137,7 +151,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings }) {
           </View>
 
           {/* Computer options */}
-          <View style={styles.section}>
+          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
+            <Text style={styles.legend}>Gracz Komputer</Text>
             <View style={styles.checkboxRow}>
               <Switch
                 value={withComputer}
@@ -197,8 +212,20 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 20,
   },
+  formLandscape: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
   section: {
     marginBottom: 15,
+  },
+  sectionColumn: {
+    flexShrink: 1,
+    flexGrow: 0,
+    marginBottom: 0,
+    marginHorizontal: 5,
+    minWidth: 150,
   },
   label: {
     fontSize: 16,
@@ -255,6 +282,10 @@ const styles = StyleSheet.create({
   },
   coverGroup: {
     flexDirection: 'row',
+    gap: 20,
+  },
+  coverGroupLandscape: {
+    flexDirection: 'column',
     gap: 20,
   },
   coverButton: {

@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "memory-game-mobile",
+    "name": "Ignaś Memory Game",
     "slug": "ignas-memory-game",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ikona.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/Ekran_gry.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,17 +23,18 @@
       "package": "com.ggrablewski.memorygame",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/ikona.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "permissions": []
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/ikona.png"
     },
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      "expo-audio"
     ],
     "extra": {
       "eas": {

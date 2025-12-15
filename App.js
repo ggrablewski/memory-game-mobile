@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, StatusBar, Text, ActivityIndicator } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as Device from 'expo-device';
 import { useImagePreloader } from './hooks/useImagePreloader';
+import { useSoundPreloader } from './hooks/useSoundPreloader';
 import Header from './components/Header';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameBoard from './components/GameBoard';
@@ -13,14 +15,24 @@ export default function App() {
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
   const imagesLoaded = useImagePreloader();
+  const { soundsLoaded, audioRefs } = useSoundPreloader();
+
+  // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
+  const isPhone = Device.deviceType === Device.DeviceType.PHONE;
+  // const isPhone = false; // do testów w emulatorze
 
   useEffect(() => {
     async function setOrientation() {
-      // Aplikacja zawsze działa w trybie portrait
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+      if (isPhone) {
+        // Smartfon: portrait
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+      } else {
+        // Tablet/inne: landscape
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      }
     }
     setOrientation();
-  }, []);
+  }, [isPhone]);
 
   const startGame = (settings) => {
     setGameSettings(settings);
@@ -47,11 +59,11 @@ export default function App() {
     setCurrentPlayer(prev => 3 - prev);
   };
 
-  if (!imagesLoaded) {
+  if (!imagesLoaded || !soundsLoaded) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={styles.loadingText}>Ładowanie obrazków...</Text>
+        <Text style={styles.loadingText}>Ładowanie gry...</Text>
       </View>
     );
   }
@@ -67,9 +79,10 @@ export default function App() {
         playerNames={playerNames}
         scores={scores}
         currentPlayer={currentPlayer}
+        isPhone={isPhone}
       />
       {!gameStarted ? (
-        <WelcomeScreen onStartGame={startGame} previousSettings={gameSettings} />
+        <WelcomeScreen onStartGame={startGame} previousSettings={gameSettings} isPhone={isPhone} />
       ) : (
         <GameBoard
           settings={gameSettings}
@@ -79,6 +92,9 @@ export default function App() {
           onIncrementScore={incrementScore}
           onSwitchPlayer={switchPlayer}
           onResetGame={resetGame}
+          isPhone={isPhone}
+          soundsLoaded={soundsLoaded}
+          audioRefs={audioRefs}
         />
       )}
     </ImageBackground>

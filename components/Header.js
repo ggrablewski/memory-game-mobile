@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Header({ playerNames, scores, currentPlayer }) {
+export default function Header({ playerNames, scores, currentPlayer, isPhone }) {
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, isPhone ? { paddingTop: 60 } : { paddingTop: 30 }]}>
       <View style={styles.playerColumn}>
         <Text style={[styles.playerName, currentPlayer === 1 && styles.activePlayer]}>
           {playerNames.player1}
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 60,
     paddingBottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
