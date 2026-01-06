@@ -1,0 +1,15 @@
+<en-IN>
+Memory Game!
+Pictures suitable for children.
+Playing in pairs or against a computer player, various difficulty levels.
+</en-IN>
+<en-US>
+Memory Game!
+Pictures suitable for children.
+Playing in pairs or against a computer player, various difficulty levels.
+</en-US>
+<pl-PL>
+Gra Memory!
+Obrazki dostosowane do dzieci.
+Gra w parach lub przeciwko komputerowi, różne poziomy trudności.
+</pl-PL>
