@@ -4,6 +4,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
 import { useImagePreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
+import { t } from './i18n';
 import Header from './components/Header';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameBoard from './components/GameBoard';
@@ -63,7 +64,7 @@ export default function App() {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={styles.loadingText}>Ładowanie gry...</Text>
+        <Text style={styles.loadingText}>{t('loadingGame')}</Text>
       </View>
     );
   }

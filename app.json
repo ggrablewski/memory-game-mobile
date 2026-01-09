@@ -34,7 +34,8 @@
     },
     "plugins": [
       "expo-asset",
-      "expo-audio"
+      "expo-audio",
+      "expo-localization"
     ],
     "extra": {
       "eas": {

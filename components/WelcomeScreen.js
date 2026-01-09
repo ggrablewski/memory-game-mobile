@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { t } from '../i18n';
 
 const KOMPUTER_NAME_LIST = [
   "Kleofas", "Euzebiusz", "Rufus", "Gotfryd", "Alcest", "Mikołajek", 
@@ -70,14 +71,14 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
         <View style={[styles.form, !isPhone && styles.formLandscape]}>
           {/* Player names */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>Gracze</Text>
-            <Text style={styles.label}>Imię gracza 1</Text>
+            <Text style={styles.legend}>{t('players')}</Text>
+            <Text style={styles.label}>{t('player1Name')}</Text>
             <TextInput
               style={styles.input}
               value={player1Name}
               onChangeText={setPlayer1Name}
             />
-            <Text style={styles.label}>Imię gracza 2</Text>
+            <Text style={styles.label}>{t('player2Name')}</Text>
             <TextInput
               style={[styles.input, withComputer && styles.inputDisabled]}
               value={player2Name}
@@ -88,7 +89,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
 
           {/* Board size */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>Rozmiar planszy</Text>
+            <Text style={styles.legend}>{t('boardSize')}</Text>
             <View style={styles.radioGroup}>
               <TouchableOpacity
                 style={styles.radioButton}
@@ -130,7 +131,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
 
           {/* Cover color */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>Kolor okładki</Text>
+            <Text style={styles.legend}>{t('coverColor')}</Text>
             <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
               <TouchableOpacity
                 style={styles.coverButton}
@@ -152,7 +153,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
 
           {/* Computer options */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>Gracz Komputer</Text>
+            <Text style={styles.legend}>{t('computerPlayer')}</Text>
             <View style={styles.checkboxRow}>
               <Switch
                 value={withComputer}
@@ -160,12 +161,12 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
                 thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
               />
-              <Text style={styles.checkboxLabel}>Gram z komputerem</Text>
+              <Text style={styles.checkboxLabel}>{t('playWithComputer')}</Text>
             </View>
 
             <View style={styles.sliderContainer}>
               <Text style={[styles.label, !withComputer && styles.disabledText]}>
-                Poziom trudności: {Math.round(difficulty)}%
+                {t('difficultyLevel')}: {Math.round(difficulty)}%
               </Text>
               <Slider
                 style={styles.slider}
@@ -184,7 +185,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.startButton} onPress={handleStart}>
-          <Text style={styles.startButtonText}>Zaczynamy!</Text>
+          <Text style={styles.startButtonText}>{t('startButton')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 8,
+    marginVertical: 8,
   },
   legend: {
     fontSize: 18,

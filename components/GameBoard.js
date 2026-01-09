@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
+import { t } from '../i18n';
 import Card from './Card';
 
 const ROZMIARY_PORTRAIT = { '4': [3, 4], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
@@ -86,12 +87,13 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     playSound('cheers');
     let message;
     if (finalScores.player1 === finalScores.player2) {
-      message = 'REMIS !!!';
+      message = t('draw');
     } else {
       const winner = finalScores.player1 > finalScores.player2 ? playerNames.player1 : playerNames.player2;
       const firstWord = winner.split(' ')[0];
       const koncowka = ['a', 'A'].includes(firstWord[firstWord.length - 1]) ? 'a' : '';
-      message = `Wygrał${koncowka}\n${winner}`;
+      const winnerText = koncowka === 'a' ? t('winnerF') : t('winnerM');
+      message = `${winnerText}\n${winner}`;
     }
     setShowMessage({ type: 'endGame', text: message });
   }, [scores, playerNames]);
@@ -101,7 +103,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     const nextPlayer = currentPlayer === 1 ? 2 : 1;
     setShowMessage({
       type: 'playerChange',
-      text: `Teraz\n${playerNames[`player${nextPlayer}`]}`
+      text: `${t('now')}\n${playerNames[`player${nextPlayer}`]}`
     });
     setTimeout(() => {
       setShowMessage(null);
@@ -311,7 +313,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
             <Text style={styles.modalText}>{showMessage?.text}</Text>
             {showMessage?.type === 'endGame' && (
               <TouchableOpacity style={styles.modalButton} onPress={onResetGame}>
-                <Text style={styles.modalButtonText}>Brawo!</Text>
+                <Text style={styles.modalButtonText}>{t('congrats')}</Text>
               </TouchableOpacity>
             )}
           </View>
