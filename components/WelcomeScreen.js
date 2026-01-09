@@ -32,7 +32,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
 
   const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
-
+  
   useEffect(() => {
     const newComputerName = KOMPUTER_NAME_LIST[Math.floor(Math.min(difficulty, 99) / 10)];
     setComputerName(newComputerName);
@@ -65,7 +65,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, !isPhone && styles.containerLandscape]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={[styles.form, !isPhone && styles.formLandscape]}>
           {/* Player names */}
@@ -194,6 +194,9 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerLandscape: {
+    paddingBottom: 10,
   },
   scrollView: {
     flex: 1,
