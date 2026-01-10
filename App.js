@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, StatusBar, Text, ActivityIndicator } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useImagePreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
 import { t } from './i18n';
@@ -9,18 +10,39 @@ import Header from './components/Header';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameBoard from './components/GameBoard';
 
+const STORAGE_KEY = '@player_names';
+
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameSettings, setGameSettings] = useState(null);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
+  const [namesLoaded, setNamesLoaded] = useState(false);
   const imagesLoaded = useImagePreloader();
   const { soundsLoaded, audioRefs, unmuteSounds } = useSoundPreloader();
 
   // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
   // const isPhone = false; // do testów w emulatorze
+
+  // Odczytaj zapisane imiona graczy przy starcie aplikacji
+  useEffect(() => {
+    async function loadPlayerNames() {
+      try {
+        const savedNames = await AsyncStorage.getItem(STORAGE_KEY);
+        if (savedNames !== null) {
+          const names = JSON.parse(savedNames);
+          setPlayerNames(names);
+        }
+      } catch (error) {
+        console.error('Error loading player names:', error);
+      } finally {
+        setNamesLoaded(true);
+      }
+    }
+    loadPlayerNames();
+  }, []);
 
   useEffect(() => {
     async function setOrientation() {
@@ -35,9 +57,18 @@ export default function App() {
     setOrientation();
   }, [isPhone]);
 
-  const startGame = (settings) => {
+  const startGame = async (settings) => {
+    const names = { player1: settings.player1Name, player2: settings.player2Name };
+
+    // Zapisz imiona graczy
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(names));
+    } catch (error) {
+      console.error('Error saving player names:', error);
+    }
+
     setGameSettings(settings);
-    setPlayerNames({ player1: settings.player1Name, player2: settings.player2Name });
+    setPlayerNames(names);
     setScores({ player1: 0, player2: 0 });
     setCurrentPlayer(1);
     setGameStarted(true);
@@ -62,7 +93,7 @@ export default function App() {
     return newPlayer;
   };
 
-  if (!imagesLoaded || !soundsLoaded) {
+  if (!imagesLoaded || !soundsLoaded || !namesLoaded) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#4CAF50" />
@@ -85,11 +116,12 @@ export default function App() {
         isPhone={isPhone}
       />
       {!gameStarted ? (
-        <WelcomeScreen 
-          onStartGame={startGame} 
-          previousSettings={gameSettings} 
-          isPhone={isPhone} 
-          unmuteSounds={unmuteSounds} 
+        <WelcomeScreen
+          onStartGame={startGame}
+          previousSettings={gameSettings}
+          playerNames={playerNames}
+          isPhone={isPhone}
+          unmuteSounds={unmuteSounds}
         />
       ) : (
         <GameBoard

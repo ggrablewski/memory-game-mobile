@@ -22,14 +22,14 @@ const SIZE_OPTIONS_LANDSCAPE = [
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
 ];
 
-export default function WelcomeScreen({ onStartGame, previousSettings, isPhone, unmuteSounds }) {
-  const [player1Name, setPlayer1Name] = useState(previousSettings?.player1Name || 'Ignaś');
-  const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || 'Tato');
+export default function WelcomeScreen({ onStartGame, previousSettings, playerNames, isPhone, unmuteSounds }) {
+  const [player1Name, setPlayer1Name] = useState(previousSettings?.player1Name || playerNames.player1);
+  const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || playerNames.player2);
   const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
   const [coverColor, setCoverColor] = useState(previousSettings?.coverColor || 'red');
   const [withComputer, setWithComputer] = useState(previousSettings?.withComputer || false);
   const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
-  const [humanName, setHumanName] = useState(previousSettings?.withComputer ? previousSettings.player1Name : previousSettings?.player2Name || 'Tato');
+  const [humanName, setHumanName] = useState(previousSettings?.withComputer ? previousSettings.player1Name : (previousSettings?.player2Name || playerNames.player2));
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
 
   const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
