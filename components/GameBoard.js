@@ -272,8 +272,9 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
   const headerHeight = isPhone ? 130 : 100;
-  const bottomMargin = isPhone ? 30 : 0; // Margines na dolne ikony systemowe
-  const availableHeight = screenHeight - headerHeight - bottomMargin + 40;
+  const returnButtonHeight = isPhone ? 60 : 0; // Wysokość przycisku powrotu (tylko na telefonie)
+  const bottomMargin = isPhone ? 20 : 0; // Margines na dolne ikony systemowe
+  const availableHeight = screenHeight - headerHeight - returnButtonHeight - bottomMargin + 40;
   const availableWidth = screenWidth - 20;
 
   const cardSizeByWidth = availableWidth / cols;
@@ -287,6 +288,13 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   return (
     <View style={styles.container}>
+      {/* Przycisk powrotu - tablet (prawy górny róg) */}
+      {!isPhone && (
+        <TouchableOpacity style={styles.returnButtonTablet} onPress={onResetGame}>
+          <Text style={styles.returnButtonText}>{t('escape')}</Text>
+        </TouchableOpacity>
+      )}
+
       <View style={[styles.board, {
         width: boardWidth,
         height: boardHeight,
@@ -308,6 +316,13 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
           </View>
         ))}
       </View>
+
+      {/* Przycisk powrotu - telefon (na dole) */}
+      {isPhone && (
+        <TouchableOpacity style={styles.returnButtonPhone} onPress={onResetGame}>
+          <Text style={styles.returnButtonText}>{t('escape')}</Text>
+        </TouchableOpacity>
+      )}
 
       <Modal
         visible={showMessage !== null}
@@ -376,5 +391,41 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  returnButtonPhone: {
+    position: 'absolute',
+    bottom: 60,
+    left: 20,
+    right: 20,
+    backgroundColor: '#FF5722',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  returnButtonTablet: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    backgroundColor: '#FF5722',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    minWidth: 100,
+  },
+  returnButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

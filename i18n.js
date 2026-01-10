@@ -17,6 +17,7 @@ const translations = {
     loadingGame: 'Ładowanie gry...',
     startButton: 'Zaczynamy!',
     congrats: 'Brawo!',
+    escape: 'Koniec',
   },
   de: {
     players: 'Spieler',
@@ -34,6 +35,7 @@ const translations = {
     loadingGame: 'Wird geladen...',
     startButton: 'Fangen wir an!',
     congrats: 'Bravo!',
+    escape: 'Zurück',
   },
   en: {
     players: 'Players',
@@ -51,6 +53,7 @@ const translations = {
     loadingGame: 'Loading game...',
     startButton: 'Let\'s start!',
     congrats: 'Congratulations!',
+    escape: 'Escape',
   }
 };
 
