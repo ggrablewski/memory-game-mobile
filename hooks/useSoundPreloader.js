@@ -4,6 +4,7 @@ import { Audio } from 'expo-av';
 export function useSoundPreloader() {
   const [soundsLoaded, setSoundsLoaded] = useState(false);
   const audioRefs = useRef({});
+  const isMuted = useRef(true); // Zaczyna wyciszony
 
   useEffect(() => {
     async function loadSounds() {
@@ -18,6 +19,14 @@ export function useSoundPreloader() {
         audioRefs.current.wrong = await Audio.Sound.createAsync(require('../assets/sounds/bounce_2.mp3'));
         audioRefs.current.correct = await Audio.Sound.createAsync(require('../assets/sounds/dog.mp3'));
         audioRefs.current.cheers = await Audio.Sound.createAsync(require('../assets/sounds/cheers.mp3'));
+
+        // Wycisz wszystkie dźwięki na starcie
+        Object.values(audioRefs.current).forEach((soundObj) => {
+          if (soundObj?.sound) {
+            soundObj.sound.setVolumeAsync(0);
+          }
+        });
+
         setSoundsLoaded(true);
       } catch (error) {
         console.error('Error loading sounds:', error);
@@ -25,7 +34,15 @@ export function useSoundPreloader() {
       }
     }
 
-    loadSounds();
+    loadSounds().then(async () => {
+      // Odtwórz dźwięki po załadowaniu
+      if (audioRefs.current.uncover?.sound) {
+        audioRefs.current.uncover.sound.playAsync();
+      }
+      if (audioRefs.current.wrong?.sound) {
+        audioRefs.current.wrong.sound.playAsync();
+      }
+    });
 
     return () => {
       Object.values(audioRefs.current).forEach((soundObj) => {
@@ -36,5 +53,16 @@ export function useSoundPreloader() {
     };
   }, []);
 
-  return { soundsLoaded, audioRefs: audioRefs.current };
+  const unmuteSounds = () => {
+    if (!isMuted.current) return;
+
+    Object.values(audioRefs.current).forEach((soundObj) => {
+      if (soundObj?.sound) {
+        soundObj.sound.setVolumeAsync(1.0); // Przywróć pełną głośność
+      }
+    });
+    isMuted.current = false;
+  };
+
+  return { soundsLoaded, audioRefs: audioRefs.current, unmuteSounds };
 }

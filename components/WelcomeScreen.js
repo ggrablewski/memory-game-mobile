@@ -22,7 +22,7 @@ const SIZE_OPTIONS_LANDSCAPE = [
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
 ];
 
-export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }) {
+export default function WelcomeScreen({ onStartGame, previousSettings, isPhone, unmuteSounds }) {
   const [player1Name, setPlayer1Name] = useState(previousSettings?.player1Name || 'Ignaś');
   const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || 'Tato');
   const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
@@ -54,6 +54,11 @@ export default function WelcomeScreen({ onStartGame, previousSettings, isPhone }
   };
 
   const handleStart = () => {
+    // Przywróć głośność przed startem gry
+    if (unmuteSounds) {
+      unmuteSounds();
+    }
+
     const settings = {
       player1Name,
       player2Name,

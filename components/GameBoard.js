@@ -71,6 +71,9 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
     playSound('start');
 
+    // Pokaż który gracz zaczyna (bez zmiany gracza)
+    showPlayerMessage(currentPlayer);
+
     if (settings.withComputer) {
       const newMemory = Array.from({ length: 40 }, () => []);
       setMemory(newMemory);
@@ -98,18 +101,21 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     setShowMessage({ type: 'endGame', text: message });
   }, [scores, playerNames]);
 
-  const showPlayerChange = useCallback(() => {
-    onSwitchPlayer();
-    const nextPlayer = currentPlayer === 1 ? 2 : 1;
+  const showPlayerMessage = useCallback((player) => {
     setShowMessage({
       type: 'playerChange',
-      text: `${t('now')}\n${playerNames[`player${nextPlayer}`]}`
+      text: `${t('now')}\n${playerNames[`player${player}`]}`
     });
     setTimeout(() => {
       setShowMessage(null);
       setIsClickable(true);
     }, 1000);
-  }, [currentPlayer, playerNames, onSwitchPlayer]);
+  }, [playerNames]);
+
+  const showPlayerChange = useCallback(() => {
+    const newPlayer = onSwitchPlayer(); // Zmień gracza i pobierz nową wartość
+    showPlayerMessage(newPlayer);
+  }, [onSwitchPlayer, showPlayerMessage]);
 
   const handleCardClick = useCallback((cardId, isComputerMove = false) => {
     // Blokuj kliknięcia użytkownika podczas komunikatu lub ruchu komputera

@@ -16,7 +16,7 @@ export default function App() {
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
   const imagesLoaded = useImagePreloader();
-  const { soundsLoaded, audioRefs } = useSoundPreloader();
+  const { soundsLoaded, audioRefs, unmuteSounds } = useSoundPreloader();
 
   // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
@@ -57,7 +57,9 @@ export default function App() {
   };
 
   const switchPlayer = () => {
-    setCurrentPlayer(prev => 3 - prev);
+    const newPlayer = 3 - currentPlayer;
+    setCurrentPlayer(newPlayer);
+    return newPlayer;
   };
 
   if (!imagesLoaded || !soundsLoaded) {
@@ -83,7 +85,12 @@ export default function App() {
         isPhone={isPhone}
       />
       {!gameStarted ? (
-        <WelcomeScreen onStartGame={startGame} previousSettings={gameSettings} isPhone={isPhone} />
+        <WelcomeScreen 
+          onStartGame={startGame} 
+          previousSettings={gameSettings} 
+          isPhone={isPhone} 
+          unmuteSounds={unmuteSounds} 
+        />
       ) : (
         <GameBoard
           settings={gameSettings}
