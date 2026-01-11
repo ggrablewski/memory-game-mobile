@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ignaś Memory Game",
     "slug": "ignas-memory-game",
-    "version": "1.0.3",
+    "version": "1.0.9",
     "orientation": "default",
     "icon": "./assets/ikona.png",
     "userInterfaceStyle": "light",
