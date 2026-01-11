@@ -29,11 +29,11 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
   const [coverColor, setCoverColor] = useState(previousSettings?.coverColor || 'red');
   const [withComputer, setWithComputer] = useState(previousSettings?.withComputer || false);
   const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
-  const [humanName, setHumanName] = useState(previousSettings?.withComputer ? previousSettings.player1Name : (previousSettings?.player2Name || playerNames.player2));
+  const [humanName, setHumanName] = useState(previousSettings?.humanName || playerNames.player2);
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
 
   const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
-  
+
   useEffect(() => {
     const newComputerName = KOMPUTER_NAME_LIST[Math.floor(Math.min(difficulty, 99) / 10)];
     setComputerName(newComputerName);
@@ -42,12 +42,20 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
     }
   }, [difficulty, withComputer]);
 
-  const handleComputerToggle = () => {
+  // Aktualizuj humanName gdy użytkownik edytuje player2Name (w trybie bez komputera)
+  useEffect(() => {
     if (!withComputer) {
       setHumanName(player2Name);
+    }
+  }, [player2Name]);
+
+  const handleComputerToggle = () => {
+    if (!withComputer) {
+      // Przełączamy na tryb z komputerem
       setPlayer2Name(computerName);
       setWithComputer(true);
     } else {
+      // Przełączamy na tryb bez komputera - przywróć humanName
       setPlayer2Name(humanName);
       setWithComputer(false);
     }
@@ -65,7 +73,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
       boardSize,
       coverColor,
       withComputer,
-      difficulty
+      difficulty,
+      humanName
     };
     onStartGame(settings);
   };

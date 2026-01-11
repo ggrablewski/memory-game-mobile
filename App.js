@@ -60,9 +60,9 @@ export default function App() {
   const startGame = async (settings) => {
     const names = { player1: settings.player1Name, player2: settings.player2Name };
 
-    // Zapisz imiona graczy
+    // Zapisz imiona graczy-ludzi (humanName zawsze przechowuje ostatnie imię gracza 2 jako człowieka)
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(names));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ player1: settings.player1Name, player2: settings.humanName }));
     } catch (error) {
       console.error('Error saving player names:', error);
     }
@@ -113,6 +113,7 @@ export default function App() {
         playerNames={playerNames}
         scores={scores}
         currentPlayer={currentPlayer}
+        gameStarted={gameStarted}
         isPhone={isPhone}
       />
       {!gameStarted ? (

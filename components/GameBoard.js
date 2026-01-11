@@ -286,11 +286,13 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   cardSize = cardSize - 4; // -4 dla marginesów
   const verticalMargin = isPhone ? (availableHeight - boardHeight - 40) / 2 :  (availableHeight - boardHeight) / 2;
 
+  const buttonColor = settings.coverColor === 'red' ? '#e36968' : '#939d9f';
+
   return (
     <View style={styles.container}>
       {/* Przycisk powrotu - tablet (prawy górny róg) */}
       {!isPhone && (
-        <TouchableOpacity style={styles.returnButtonTablet} onPress={onResetGame}>
+        <TouchableOpacity style={[styles.returnButtonTablet, { backgroundColor: buttonColor }]} onPress={onResetGame}>
           <Text style={styles.returnButtonText}>{t('escape')}</Text>
         </TouchableOpacity>
       )}
@@ -319,7 +321,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
       {/* Przycisk powrotu - telefon (na dole) */}
       {isPhone && (
-        <TouchableOpacity style={styles.returnButtonPhone} onPress={onResetGame}>
+        <TouchableOpacity style={[styles.returnButtonPhone, { backgroundColor: buttonColor }]} onPress={onResetGame}>
           <Text style={styles.returnButtonText}>{t('escape')}</Text>
         </TouchableOpacity>
       )}
@@ -397,7 +399,6 @@ const styles = StyleSheet.create({
     bottom: 60,
     left: 20,
     right: 20,
-    backgroundColor: '#FF5722',
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
@@ -411,7 +412,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 20,
-    backgroundColor: '#FF5722',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
