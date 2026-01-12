@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   headerTablet: {
-    paddingTop: 30,
+    paddingTop: 80,
   },
   playerColumn: {
     width: '40%',

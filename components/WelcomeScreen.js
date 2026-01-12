@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 15,
-    paddingBottom: 40,
+    paddingBottom: 50,
     backgroundColor: 'transparent',
   },
   form: {

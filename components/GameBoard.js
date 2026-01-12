@@ -271,9 +271,9 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
-  const headerHeight = isPhone ? 130 : 100;
+  const headerHeight = isPhone ? 130 : 150;
   const returnButtonHeight = isPhone ? 60 : 0; // Wysokość przycisku powrotu (tylko na telefonie)
-  const bottomMargin = isPhone ? 20 : 0; // Margines na dolne ikony systemowe
+  const bottomMargin = isPhone ? 20 : 100; // Margines na dolne ikony systemowe
   const availableHeight = screenHeight - headerHeight - returnButtonHeight - bottomMargin + 40;
   const availableWidth = screenWidth - 20;
 
@@ -289,7 +289,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const buttonColor = settings.coverColor === 'red' ? '#e36968' : '#939d9f';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, !isPhone && { paddingTop: 20 }]}>
       {/* Przycisk powrotu - tablet (prawy górny róg) */}
       {!isPhone && (
         <TouchableOpacity style={[styles.returnButtonTablet, { backgroundColor: buttonColor }]} onPress={onResetGame}>
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   },
   returnButtonTablet: {
     position: 'absolute',
-    top: 10,
+    top: 20,
     right: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
