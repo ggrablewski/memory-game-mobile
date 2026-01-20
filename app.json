@@ -4,7 +4,7 @@
     "slug": "ignas-memory-game",
     "version": "1.0.10",
     "orientation": "default",
-    "icon": "./assets/ikona_4.png",
+    "icon": "./assets/ikona_2.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -23,14 +23,14 @@
       "package": "com.ggrablewski.memorygame",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/ikona_4.png",
+        "foregroundImage": "./assets/ikona_2.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "permissions": []
     },
     "web": {
-      "favicon": "./assets/ikona_4.png"
+      "favicon": "./assets/ikona_2.png"
     },
     "plugins": [
       "expo-asset",
