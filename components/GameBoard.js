@@ -286,7 +286,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   cardSize = cardSize - 4; // -4 dla marginesów
   const verticalMargin = isPhone ? (availableHeight - boardHeight - 40) / 2 :  (availableHeight - boardHeight) / 2;
 
-  const buttonColor = settings.coverColor === 'red' ? '#e36968' : '#939d9f';
+  const buttonColor = settings.coverColor === 'red' ? '#e36968' : '#528c97';
 
   return (
     <View style={[styles.container, !isPhone && { paddingTop: 20 }]}>
