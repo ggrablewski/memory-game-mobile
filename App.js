@@ -10,7 +10,8 @@ import Header from './components/Header';
 import WelcomeScreen from './components/WelcomeScreen';
 import GameBoard from './components/GameBoard';
 
-const STORAGE_KEY = '@player_names';
+const STORAGE_KEY = '@game_settings';
+const OLD_STORAGE_KEY = '@player_names'; // dla wstecznej kompatybilności
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -18,7 +19,8 @@ export default function App() {
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
-  const [namesLoaded, setNamesLoaded] = useState(false);
+  const [savedSettings, setSavedSettings] = useState(null);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [deckType, setDeckType] = useState(null); // null = nie ładujemy jeszcze kart
   const imagesLoaded = useImagePreloader();
   const { soundsLoaded, audioRefs, unmuteSounds } = useSoundPreloader();
@@ -28,22 +30,43 @@ export default function App() {
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
   // const isPhone = false; // do testów w emulatorze
 
-  // Odczytaj zapisane imiona graczy przy starcie aplikacji
+  // Odczytaj zapisane ustawienia przy starcie aplikacji
   useEffect(() => {
-    async function loadPlayerNames() {
+    async function loadSettings() {
       try {
-        const savedNames = await AsyncStorage.getItem(STORAGE_KEY);
-        if (savedNames !== null) {
-          const names = JSON.parse(savedNames);
-          setPlayerNames(names);
+        // Spróbuj odczytać nowe ustawienia
+        let savedData = await AsyncStorage.getItem(STORAGE_KEY);
+
+        if (savedData !== null) {
+          const settings = JSON.parse(savedData);
+          setSavedSettings(settings);
+          setPlayerNames({ player1: settings.player1, player2: settings.player2 });
+        } else {
+          // Sprawdź stare ustawienia (tylko imiona) dla wstecznej kompatybilności
+          const oldNames = await AsyncStorage.getItem(OLD_STORAGE_KEY);
+          if (oldNames !== null) {
+            const names = JSON.parse(oldNames);
+            setPlayerNames(names);
+            // Utwórz savedSettings z domyślnymi wartościami i starymi imionami
+            setSavedSettings({
+              player1: names.player1,
+              player2: names.player2,
+              boardSize: '4',
+              coverColor: 'red',
+              deckType: 'fv',
+              withComputer: false,
+              difficulty: 51,
+              oldDeckEnabled: false
+            });
+          }
         }
       } catch (error) {
-        console.error('Error loading player names:', error);
+        console.error('Error loading settings:', error);
       } finally {
-        setNamesLoaded(true);
+        setSettingsLoaded(true);
       }
     }
-    loadPlayerNames();
+    loadSettings();
   }, []);
 
   useEffect(() => {
@@ -57,16 +80,27 @@ export default function App() {
       }
     }
     setOrientation();
-  }, [isPhone]);
+  }, []);
 
   const startGame = async (settings) => {
     const names = { player1: settings.player1Name, player2: settings.player2Name };
 
-    // Zapisz imiona graczy-ludzi (humanName zawsze przechowuje ostatnie imię gracza 2 jako człowieka)
+    // Zapisz wszystkie ustawienia gry
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ player1: settings.player1Name, player2: settings.humanName }));
+      const settingsToSave = {
+        player1: settings.player1Name,
+        player2: settings.humanName, // Zawsze zapisuj humanName (imię gracza 2 jako człowieka)
+        boardSize: settings.boardSize,
+        coverColor: settings.coverColor,
+        deckType: settings.deckType,
+        withComputer: settings.withComputer,
+        difficulty: settings.difficulty,
+        oldDeckEnabled: settings.oldDeckEnabled || shouldEnable(settings) // dla wstecznej kompatybilności
+      };
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
+      setSavedSettings(settingsToSave);
     } catch (error) {
-      console.error('Error saving player names:', error);
+      console.error('Error saving game settings:', error);
     }
 
     setGameSettings(settings);
@@ -96,7 +130,15 @@ export default function App() {
     return newPlayer;
   };
 
-  if (!imagesLoaded || !soundsLoaded || !namesLoaded) {
+  const shouldEnable = (settings) => {
+    const name1 = settings.player1Name.split(' ');
+    const name2 = settings.humanName.split(' ');
+    return name1.length > 1 &&name1[0] === 'Ignacy' && name1[1] === '#unlock' &&
+           name2.length > 1 && name2[0] === 'Tatuś' && name2[1] === '#deck' &&
+           settings.withComputer;
+  }
+
+  if (!imagesLoaded || !soundsLoaded || !settingsLoaded) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#4CAF50" />
@@ -123,6 +165,7 @@ export default function App() {
         <WelcomeScreen
           onStartGame={startGame}
           previousSettings={gameSettings}
+          savedSettings={savedSettings}
           playerNames={playerNames}
           isPhone={isPhone}
           unmuteSounds={unmuteSounds}

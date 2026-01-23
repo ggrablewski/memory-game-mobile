@@ -22,16 +22,20 @@ const SIZE_OPTIONS_LANDSCAPE = [
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
 ];
 
-export default function WelcomeScreen({ onStartGame, previousSettings, playerNames, isPhone, unmuteSounds }) {
-  const [player1Name, setPlayer1Name] = useState(previousSettings?.player1Name || playerNames.player1);
-  const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || playerNames.player2);
-  const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
-  const [coverColor, setCoverColor] = useState(previousSettings?.coverColor || 'red');
-  const [deckType, setDeckType] = useState(previousSettings?.deckType || 'fv');
-  const [withComputer, setWithComputer] = useState(previousSettings?.withComputer || false);
-  const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
-  const [humanName, setHumanName] = useState(previousSettings?.humanName || playerNames.player2);
-  const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(previousSettings?.difficulty || 50, 99) / 10)]);
+export default function WelcomeScreen({ onStartGame, previousSettings, savedSettings, playerNames, isPhone, unmuteSounds }) {
+  // Użyj previousSettings jeśli istnieje (po resecie gry), w przeciwnym razie użyj savedSettings (zapisane z poprzedniej sesji)
+  const settings = previousSettings || savedSettings;
+
+  const [player1Name, setPlayer1Name] = useState(settings?.player1Name || settings?.player1 || playerNames.player1);
+  const [player2Name, setPlayer2Name] = useState(settings?.player2Name || settings?.player2 || playerNames.player2);
+  const [boardSize, setBoardSize] = useState(settings?.boardSize || '4');
+  const [coverColor, setCoverColor] = useState(settings?.coverColor || 'red');
+  const [deckType, setDeckType] = useState(settings?.deckType || 'fv');
+  const [withComputer, setWithComputer] = useState(settings?.withComputer || false);
+  const [difficulty, setDifficulty] = useState(settings?.difficulty || 51);
+  const [oldDeckEnabled, setOldDeckEnabled] = useState(settings?.oldDeckEnabled || false);
+  const [humanName, setHumanName] = useState(settings?.humanName || settings?.player2 || playerNames.player2);
+  const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(settings?.difficulty || 50, 99) / 10)]);
 
   const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
 
@@ -76,6 +80,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
       deckType,
       withComputer,
       difficulty,
+      oldDeckEnabled,
       humanName
     };
     onStartGame(settings);
@@ -187,13 +192,13 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
                 <Image source={require('../assets/images/art_menu.jpg')} style={styles.coverImage} />
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {oldDeckEnabled && <TouchableOpacity
                 style={styles.coverButton}
                 onPress={() => setDeckType('old')}
               >
                 <View style={[styles.radio, deckType === 'old' && styles.radioSelected]} />
-                <Image source={require('../assets/images/old/old_menu.png')} style={styles.coverImage} />
-              </TouchableOpacity>
+                <Image source={require('../assets/images/old/old_menu.jpg')} style={styles.coverImage} />
+              </TouchableOpacity>}
             </View>
           </View>
 
@@ -332,6 +337,7 @@ const styles = StyleSheet.create({
   },
   coverGroup: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 20,
   },
   coverGroupLandscape: {
