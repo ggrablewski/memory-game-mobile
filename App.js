@@ -3,7 +3,7 @@ import { StyleSheet, View, ImageBackground, StatusBar, Text, ActivityIndicator }
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useImagePreloader } from './hooks/useImagePreloader';
+import { useImagePreloader, useCardPreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
 import { t } from './i18n';
 import Header from './components/Header';
@@ -19,8 +19,10 @@ export default function App() {
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
   const [namesLoaded, setNamesLoaded] = useState(false);
+  const [deckType, setDeckType] = useState(null); // null = nie ładujemy jeszcze kart
   const imagesLoaded = useImagePreloader();
   const { soundsLoaded, audioRefs, unmuteSounds } = useSoundPreloader();
+  const cardsLoaded = useCardPreloader(deckType); // Załaduj karty gdy deckType jest ustawione (null = nie ładuj jeszcze)
 
   // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
@@ -71,6 +73,7 @@ export default function App() {
     setPlayerNames(names);
     setScores({ player1: 0, player2: 0 });
     setCurrentPlayer(1);
+    setDeckType(settings.deckType); // Rozpocznij ładowanie kart dla wybranej talii
     setGameStarted(true);
   };
 
@@ -104,7 +107,7 @@ export default function App() {
 
   return (
     <ImageBackground
-      source={require('./assets/images/dark_green_1.jpg')}
+      source={require('./assets/images/dark_green_2.jpg')}
       style={styles.container}
       resizeMode="cover"
     >
@@ -124,6 +127,11 @@ export default function App() {
           isPhone={isPhone}
           unmuteSounds={unmuteSounds}
         />
+      ) : !cardsLoaded ? (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+          <Text style={styles.loadingText}>{t('loadingCards')}</Text>
+        </View>
       ) : (
         <GameBoard
           settings={gameSettings}

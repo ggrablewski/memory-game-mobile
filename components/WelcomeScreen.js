@@ -27,6 +27,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
   const [player2Name, setPlayer2Name] = useState(previousSettings?.player2Name || playerNames.player2);
   const [boardSize, setBoardSize] = useState(previousSettings?.boardSize || '4');
   const [coverColor, setCoverColor] = useState(previousSettings?.coverColor || 'red');
+  const [deckType, setDeckType] = useState(previousSettings?.deckType || 'fv');
   const [withComputer, setWithComputer] = useState(previousSettings?.withComputer || false);
   const [difficulty, setDifficulty] = useState(previousSettings?.difficulty || 51);
   const [humanName, setHumanName] = useState(previousSettings?.humanName || playerNames.player2);
@@ -72,6 +73,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
       player2Name,
       boardSize,
       coverColor,
+      deckType,
       withComputer,
       difficulty,
       humanName
@@ -161,6 +163,36 @@ export default function WelcomeScreen({ onStartGame, previousSettings, playerNam
               >
                 <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
                 <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Deck typer */}
+          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
+            <Text style={styles.legend}>{t('deckType')}</Text>
+            <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setDeckType('fv')}
+              >
+                <View style={[styles.radio, deckType === 'fv' && styles.radioSelected]} />
+                <Image source={require('../assets/images/fv_menu.jpg')} style={styles.coverImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setDeckType('art')}
+              >
+                <View style={[styles.radio, deckType === 'art' && styles.radioSelected]} />
+                <Image source={require('../assets/images/art_menu.jpg')} style={styles.coverImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setDeckType('old')}
+              >
+                <View style={[styles.radio, deckType === 'old' && styles.radioSelected]} />
+                <Image source={require('../assets/images/old/old_menu.png')} style={styles.coverImage} />
               </TouchableOpacity>
             </View>
           </View>

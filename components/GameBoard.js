@@ -313,6 +313,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
               isFlipped={flippedCards.includes(card.id)}
               isMatched={matchedCards.includes(card.id)}
               coverColor={settings.coverColor}
+              deckType={settings.deckType}
               onCardClick={handleCardClick}
             />
           </View>
