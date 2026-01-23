@@ -19,7 +19,7 @@ const shuffleArray = (array) => {
   return arr;
 };
 
-export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame, isPhone, soundsLoaded, audioRefs }) {
+export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame, isPhone, audioRefs }) {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -80,7 +80,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       const moves = shuffleArray(newCards.map(card => card.id));
       setPossibleMoves(moves);
     }
-  }, [prepareCards, totalCards, cols, settings.withComputer, soundsLoaded]);
+  }, []); // Uruchom tylko raz przy montowaniu - wszystkie wartości są stałe dla danej gry
 
   const isComputerTurn = useCallback(() => {
     return settings.withComputer && currentPlayer === 2;

@@ -113,6 +113,7 @@ export default function App() {
 
   const resetGame = () => {
     setGameStarted(false);
+    setDeckType(null); // Resetuj deckType aby wymusić ponowne ładowanie kart przy kolejnej grze
     setScores({ player1: 0, player2: 0 });
     setCurrentPlayer(1);
   };
@@ -185,7 +186,6 @@ export default function App() {
           onSwitchPlayer={switchPlayer}
           onResetGame={resetGame}
           isPhone={isPhone}
-          soundsLoaded={soundsLoaded}
           audioRefs={audioRefs}
         />
       )}
