@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ignaś Memo Pairs",
-    "slug": "ignas-memo-pairs",
+    "slug": "ignas-memory-game",
     "version": "1.1.0",
     "icon": "./assets/ikona_512.png",
     "userInterfaceStyle": "light",
