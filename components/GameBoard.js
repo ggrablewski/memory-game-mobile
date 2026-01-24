@@ -28,6 +28,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const [remainingPairs, setRemainingPairs] = useState(0);
   const [memory, setMemory] = useState([]);
   const [possibleMoves, setPossibleMoves] = useState([]);
+  const [showAllCards, setShowAllCards] = useState(false);
   const computerMoveInProgress = useRef(false);
   const currentFlippedCards = useRef([]);
 
@@ -88,6 +89,10 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   const endGame = useCallback((finalScores = scores) => {
     playSound('cheers');
+
+    // Odkryj wszystkie karty
+    setShowAllCards(true);
+
     let message;
     if (finalScores.player1 === finalScores.player2) {
       message = t('draw');
@@ -98,7 +103,11 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       const winnerText = koncowka === 'a' ? t('winnerF') : t('winnerM');
       message = `${winnerText}\n${winner}`;
     }
-    setShowMessage({ type: 'endGame', text: message });
+
+    // Pokaż odkryte karty przez 3 sekundy, potem wyświetl modal z wynikiem
+    setTimeout(() => {
+      setShowMessage({ type: 'endGame', text: message });
+    }, 3000);
   }, [scores, playerNames]);
 
   const showPlayerMessage = useCallback((player) => {
@@ -314,6 +323,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
               card={card}
               isFlipped={flippedCards.includes(card.id)}
               isMatched={matchedCards.includes(card.id)}
+              showAllCards={showAllCards}
               coverColor={settings.coverColor}
               deckType={settings.deckType}
               onCardClick={handleCardClick}

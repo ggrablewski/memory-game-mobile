@@ -149,28 +149,33 @@ const DECK_IMAGES = {
   }
 };
 
-export default function Card({ card, isFlipped, isMatched, coverColor, deckType, onCardClick }) {
+export default function Card({ card, isFlipped, isMatched, showAllCards, coverColor, deckType, onCardClick }) {
   const handlePress = () => {
     if (!isFlipped && !isMatched) {
       onCardClick(card.id);
     }
   };
 
-  if (isMatched) {
-    return <View style={styles.emptyCard} />;
-  }
-
   // Pobierz odpowiednią talię na podstawie deckType
   const deck = DECK_IMAGES[deckType] || DECK_IMAGES.fv; // fallback na 'fv' jeśli deckType nieprawidłowy
 
   // Konwertuj card.value na string z padding (np. 0 -> '00', 5 -> '05')
   const cardKey = String(card.value).padStart(2, '0');
-  const imageSource = isFlipped ? deck.cards[cardKey] : deck.covers[coverColor];
+
+  // Jeśli showAllCards jest true (koniec gry), pokaż wszystkie karty odkryte
+  // W przeciwnym razie, jeśli karta została dopasowana, nie renderuj nic
+  if (isMatched && !showAllCards) {
+    return <View style={styles.emptyCard} />;
+  }
+
+  // Określ czy pokazać odkrytą kartę czy okładkę
+  const shouldShowCard = isFlipped || showAllCards;
+  const imageSource = shouldShowCard ? deck.cards[cardKey] : deck.covers[coverColor];
 
   return (
     <TouchableOpacity
       onPress={handlePress}
-      disabled={isFlipped}
+      disabled={isFlipped || showAllCards}
       activeOpacity={0.7}
       style={styles.card}
     >
