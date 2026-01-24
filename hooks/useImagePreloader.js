@@ -17,8 +17,19 @@ export function useImagePreloader() {
   useEffect(() => {
     async function loadImages() {
       try {
+        // Załaduj obrazki menu
         const imageAssets = menuItems.map(image => Asset.fromModule(image).downloadAsync());
-        await Promise.all(imageAssets);
+
+        // Załaduj WSZYSTKIE talie kart na starcie
+        const allCardImages = [
+          ...DECK_CARD_IMAGES.art,
+          ...DECK_CARD_IMAGES.fv,
+          ...DECK_CARD_IMAGES.old
+        ];
+        const cardAssets = allCardImages.map(image => Asset.fromModule(image).downloadAsync());
+
+        // Czekaj na załadowanie wszystkiego
+        await Promise.all([...imageAssets, ...cardAssets]);
         setImagesLoaded(true);
       } catch (error) {
         console.error('Error loading images:', error);
@@ -189,7 +200,7 @@ export function useCardPreloader(deckType) {
     }
 
     loadCards();
-  }, [deckType]);
+  }, []);
 
   return cardsLoaded;
 }

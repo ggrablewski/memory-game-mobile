@@ -3,7 +3,7 @@ import { StyleSheet, View, ImageBackground, StatusBar, Text, ActivityIndicator }
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useImagePreloader, useCardPreloader } from './hooks/useImagePreloader';
+import { useImagePreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
 import { t } from './i18n';
 import Header from './components/Header';
@@ -21,10 +21,8 @@ export default function App() {
   const [playerNames, setPlayerNames] = useState({ player1: 'Ignaś', player2: 'Tato' });
   const [savedSettings, setSavedSettings] = useState(null);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [deckType, setDeckType] = useState(null); // null = nie ładujemy jeszcze kart
-  const imagesLoaded = useImagePreloader();
+  const imagesLoaded = useImagePreloader(); // Ładuje menu + WSZYSTKIE talie kart
   const { soundsLoaded, audioRefs, unmuteSounds } = useSoundPreloader();
-  const cardsLoaded = useCardPreloader(deckType); // Załaduj karty gdy deckType jest ustawione (null = nie ładuj jeszcze)
 
   // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
@@ -39,6 +37,7 @@ export default function App() {
 
         if (savedData !== null) {
           const settings = JSON.parse(savedData);
+          // settings.oldDeckEnabled = true; // do testów
           setSavedSettings(settings);
           setPlayerNames({ player1: settings.player1, player2: settings.player2 });
         } else {
@@ -107,15 +106,14 @@ export default function App() {
     setPlayerNames(names);
     setScores({ player1: 0, player2: 0 });
     setCurrentPlayer(1);
-    setDeckType(settings.deckType); // Rozpocznij ładowanie kart dla wybranej talii
     setGameStarted(true);
   };
 
   const resetGame = () => {
     setGameStarted(false);
-    setDeckType(null); // Resetuj deckType aby wymusić ponowne ładowanie kart przy kolejnej grze
     setScores({ player1: 0, player2: 0 });
     setCurrentPlayer(1);
+    // Nie resetujemy deckType - karty są już załadowane i mogą być reużyte
   };
 
   const incrementScore = (player) => {
@@ -171,11 +169,6 @@ export default function App() {
           isPhone={isPhone}
           unmuteSounds={unmuteSounds}
         />
-      ) : !cardsLoaded ? (
-        <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#4CAF50" />
-          <Text style={styles.loadingText}>{t('loadingCards')}</Text>
-        </View>
       ) : (
         <GameBoard
           settings={gameSettings}

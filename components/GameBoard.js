@@ -288,7 +288,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   const buttonColor = settings.coverColor === 'red' 
   ? '#e36968' 
-  : settings.oldDeckEnabled ? '#818F98' : '#528c97';
+  : settings.deckType === 'old' ? '#818F98' : '#528c97';
 
   return (
     <View style={[styles.container, !isPhone && { paddingTop: 20 }]}>
