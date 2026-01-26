@@ -52,7 +52,7 @@ const translations = {
     now: 'Сега',
     winnerM: 'Спечелил',
     winnerF: 'Спечелила',
-    draw: 'ИЗРАВНЕНИ !!!',
+    draw: 'РАВЕН !!!',
     loadingGame: 'Играта се зарежда...',
     startButton: 'Ето го!',
     congrats: 'Браво!',
