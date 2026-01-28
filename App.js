@@ -29,6 +29,8 @@ function AppContent() {
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
   // const isPhone = false; // do testów w emulatorze
   const insets = useSafeAreaInsets();
+  // insets.top = 30; // Test
+  // insets.bottom = 100; // Test
 
   // Odczytaj zapisane ustawienia przy starcie aplikacji
   useEffect(() => {
