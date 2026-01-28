@@ -22,7 +22,7 @@ const SIZE_OPTIONS_LANDSCAPE = [
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
 ];
 
-export default function WelcomeScreen({ onStartGame, previousSettings, savedSettings, playerNames, isPhone, unmuteSounds }) {
+export default function WelcomeScreen({ onStartGame, previousSettings, savedSettings, playerNames, isPhone, unmuteSounds, cutout }) {
   // Użyj previousSettings jeśli istnieje (po resecie gry), w przeciwnym razie użyj savedSettings (zapisane z poprzedniej sesji)
   const settings = previousSettings || savedSettings;
 
@@ -87,7 +87,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
   };
 
   return (
-    <View style={[styles.container, !isPhone && styles.containerLandscape]}>
+    <View style={[styles.container, { paddingBottom: cutout.bottom, paddingLeft: cutout.left, paddingRight: cutout.right }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={[styles.form, !isPhone && styles.formLandscape]}>
           {/* Player names */}
@@ -247,9 +247,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  containerLandscape: {
-    paddingBottom: 10,
-  },
   scrollView: {
     flex: 1,
   },
@@ -259,7 +256,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 15,
-    paddingBottom: 50,
     backgroundColor: 'transparent',
   },
   form: {

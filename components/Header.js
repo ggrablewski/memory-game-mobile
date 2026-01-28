@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Header({ playerNames, scores, currentPlayer, gameStarted, isPhone }) {
+export default function Header({ playerNames, scores, currentPlayer, gameStarted, isPhone, topCutout }) {
   return (
-    <View style={[styles.header, isPhone ? styles.headerPhone : styles.headerTablet]}>
+    <View style={[styles.header, { paddingTop: topCutout + 30 }]}>
       <View style={styles.playerColumn}>
         <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 1 && styles.activeBorder]}>
           <Text style={styles.playerName}>
@@ -34,12 +34,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  },
-  headerPhone: {
-    paddingTop: 60,
-  },
-  headerTablet: {
-    paddingTop: 80,
   },
   playerColumn: {
     width: '40%',

@@ -19,7 +19,7 @@ const shuffleArray = (array) => {
   return arr;
 };
 
-export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame, isPhone, audioRefs }) {
+export default function GameBoard({ settings, currentPlayer, playerNames, scores, onIncrementScore, onSwitchPlayer, onResetGame, isPhone, audioRefs, cutout }) {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -275,16 +275,16 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     }
   }, [isComputerTurn, isClickable, flippedCards.length, cards, memory, possibleMoves, handleCardClick]);
 
-  const screenWidth = Dimensions.get('window').width;
-  const screenHeight = Dimensions.get('window').height;
+  const screenWidth = Dimensions.get('window').width - cutout.left - cutout.right;
+  const screenHeight = Dimensions.get('window').height - cutout.top - cutout.bottom;
 
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
-  const headerHeight = isPhone ? 130 : 150;
+  const headerHeight = cutout.top + 100;
   const returnButtonHeight = isPhone ? 60 : 0; // Wysokość przycisku powrotu (tylko na telefonie)
-  const bottomMargin = isPhone ? 20 : 100; // Margines na dolne ikony systemowe
-  const availableHeight = screenHeight - headerHeight - returnButtonHeight - bottomMargin + 40;
-  const availableWidth = screenWidth - 20;
+  const bottomMargin = cutout.bottom + 20; // Margines na dolne ikony systemowe
+  const availableHeight = screenHeight - cutout.top - returnButtonHeight - cutout.bottom - 80;
+  const availableWidth = screenWidth - cutout.left - cutout.right - 20;
 
   const cardSizeByWidth = availableWidth / cols;
   const cardSizeByHeight = availableHeight / rows;
@@ -300,10 +300,18 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   : settings.deckType === 'old' ? '#818F98' : '#528c97';
 
   return (
-    <View style={[styles.container, !isPhone && { paddingTop: 20 }]}>
+    <View style={[styles.container, {
+      paddingTop: cutout.top,
+      paddingBottom: cutout.bottom,
+      paddingLeft: cutout.left,
+      paddingRight: cutout.right } ]}>
       {/* Przycisk powrotu - tablet (prawy górny róg) */}
       {!isPhone && (
-        <TouchableOpacity style={[styles.returnButtonTablet, { backgroundColor: buttonColor }]} onPress={onResetGame}>
+        <TouchableOpacity style={[styles.returnButtonTablet, {
+              top: cutout.top + 20,
+              right: cutout.right + 20,
+              backgroundColor: buttonColor 
+            }]} onPress={onResetGame}>
           <Text style={styles.returnButtonText}>{t('escape')}</Text>
         </TouchableOpacity>
       )}
@@ -334,7 +342,12 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
       {/* Przycisk powrotu - telefon (na dole) */}
       {isPhone && (
-        <TouchableOpacity style={[styles.returnButtonPhone, { backgroundColor: buttonColor }]} onPress={onResetGame}>
+        <TouchableOpacity style={[styles.returnButtonPhone, { 
+              bottom: cutout.bottom + 10,
+              left: cutout.left + 20,
+              right: cutout.right + 20,
+              backgroundColor: buttonColor
+            }]} onPress={onResetGame}>
           <Text style={styles.returnButtonText}>{t('escape')}</Text>
         </TouchableOpacity>
       )}
@@ -409,9 +422,6 @@ const styles = StyleSheet.create({
   },
   returnButtonPhone: {
     position: 'absolute',
-    bottom: 60,
-    left: 20,
-    right: 20,
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
@@ -423,8 +433,6 @@ const styles = StyleSheet.create({
   },
   returnButtonTablet: {
     position: 'absolute',
-    top: 20,
-    right: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,

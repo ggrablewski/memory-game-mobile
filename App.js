@@ -3,6 +3,7 @@ import { StyleSheet, View, ImageBackground, StatusBar, Text, ActivityIndicator }
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useImagePreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
 import { t } from './i18n';
@@ -13,7 +14,7 @@ import GameBoard from './components/GameBoard';
 const STORAGE_KEY = '@game_settings';
 const OLD_STORAGE_KEY = '@player_names'; // dla wstecznej kompatybilności
 
-export default function App() {
+function AppContent() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameSettings, setGameSettings] = useState(null);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
@@ -27,6 +28,7 @@ export default function App() {
   // Wykryj typ urządzenia: smartfon = portrait, inne = landscape
   const isPhone = Device.deviceType === Device.DeviceType.PHONE;
   // const isPhone = false; // do testów w emulatorze
+  const insets = useSafeAreaInsets();
 
   // Odczytaj zapisane ustawienia przy starcie aplikacji
   useEffect(() => {
@@ -159,6 +161,7 @@ export default function App() {
         currentPlayer={currentPlayer}
         gameStarted={gameStarted}
         isPhone={isPhone}
+        topCutout={insets.top}
       />
       {!gameStarted ? (
         <WelcomeScreen
@@ -168,6 +171,7 @@ export default function App() {
           playerNames={playerNames}
           isPhone={isPhone}
           unmuteSounds={unmuteSounds}
+          cutout={insets}
         />
       ) : (
         <GameBoard
@@ -180,9 +184,19 @@ export default function App() {
           onResetGame={resetGame}
           isPhone={isPhone}
           audioRefs={audioRefs}
+          cutout={insets}
         />
       )}
     </ImageBackground>
+  );
+}
+
+// Główny komponent App z SafeAreaProvider
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AppContent />
+    </SafeAreaProvider>
   );
 }
 
