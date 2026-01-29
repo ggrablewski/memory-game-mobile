@@ -1,0 +1,29 @@
+{
+"DeviceType": {"0": "UNKNOWN", "1": "PHONE", "2": "TABLET", "3": "DESKTOP", "4": "TV", "DESKTOP": 3, "PHONE": 1, "TABLET": 2, "TV": 4, "UNKNOWN": 0}, 
+"brand": "samsung", 
+"designName": "a35x", 
+"deviceName": "Grzegorz Galaxy A35 5G", 
+"deviceType": 1, 
+"deviceYearClass": 2016, 
+"isDevice": true, 
+"manufacturer": "samsung", 
+"modelId": null, 
+"modelName": "SM-A356B", 
+"osBuildFingerprint": "samsung/a35xeea/a35x:16/BP2A.250605.031.A3/A356BXXS7CYK1:user/release-keys", 
+"osBuildId": "BP2A.250605.031.A3.A356BXXS7CYK1", 
+"osInternalBuildId": "BP2A.250605.031.A3", 
+"osName": "samsung/a35xeea/a35x:16/BP2A.250605.031.A3/A356BXXU6CYI8:user/release-keys", 
+"osVersion": "16", 
+"platformApiLevel": 36, 
+"productName": "a35xeea", 
+"supportedCpuArchitectures": ["arm64-v8a", "armeabi-v7a", "armeabi"], 
+"totalMemory": 7798194176
+}
+
+insets:
+{
+"bottom": 48, 
+"left": 0, 
+"right": 0, 
+"top": 32.35555648803711
+}
