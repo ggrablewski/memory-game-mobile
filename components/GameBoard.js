@@ -282,9 +282,10 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
   const headerHeight = cutout.top + 100;
   const returnButtonHeight = isPhone ? 60 : 0; // Wysokość przycisku powrotu (tylko na telefonie)
-  const bottomMargin = cutout.bottom + 20; // Margines na dolne ikony systemowe
-  const availableHeight = screenHeight - cutout.top - returnButtonHeight - cutout.bottom - 80;
-  const availableWidth = screenWidth - cutout.left - cutout.right - 20;
+  const returnButtonWidth = isPhone ? 0 : 120; // Szerokość przycisku powrotu (tylko na nie-telefonie)
+  const footerHeight = cutout.bottom + 20; // Margines na dolne ikony systemowe
+  const availableHeight = screenHeight - headerHeight - returnButtonHeight - footerHeight;
+  const availableWidth = screenWidth - cutout.left - cutout.right - 20 - returnButtonWidth;
 
   const cardSizeByWidth = availableWidth / cols;
   const cardSizeByHeight = availableHeight / rows;
@@ -293,7 +294,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const boardHeight = rows * cardSize;
   const boardWidth = cols * cardSize;
   cardSize = cardSize - 4; // -4 dla marginesów
-  const verticalMargin = isPhone ? (availableHeight - boardHeight - 40) / 2 :  (availableHeight - boardHeight) / 2;
+  const verticalMargin = ((availableHeight - boardHeight)/2) - isPhone ? 20 : 0;
 
   const buttonColor = settings.coverColor === 'red' 
   ? '#e36968' 
@@ -310,6 +311,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
         <TouchableOpacity style={[styles.returnButtonTablet, {
               top: cutout.top + 20,
               right: cutout.right + 20,
+              minWidth: 120,
               backgroundColor: buttonColor 
             }]} onPress={onResetGame}>
           <Text style={styles.returnButtonText}>{t('escape')}</Text>
@@ -319,7 +321,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       <View style={[styles.board, {
         width: boardWidth,
         height: boardHeight,
-        marginTop: verticalMargin
+        // marginTop: verticalMargin
       }]}>
         {cards.map(card => (
           <View
@@ -382,6 +384,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   modalOverlay: {
     flex: 1,
