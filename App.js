@@ -34,7 +34,7 @@ function AppContent() {
 
   // Odczytaj zapisane ustawienia przy starcie aplikacji
   useEffect(() => {
-    async function loadSettings() {
+    async function loadSettings() {      
       try {
         // Spróbuj odczytać nowe ustawienia
         let savedData = await AsyncStorage.getItem(STORAGE_KEY);
@@ -59,6 +59,7 @@ function AppContent() {
               deckType: 'fv',
               withComputer: false,
               difficulty: 51,
+              withSound: true,
               oldDeckEnabled: false
             });
           }
@@ -98,6 +99,7 @@ function AppContent() {
         deckType: settings.deckType,
         withComputer: settings.withComputer,
         difficulty: settings.difficulty,
+        withSound: settings.withSound,
         oldDeckEnabled: settings.oldDeckEnabled || shouldEnable(settings) // dla wstecznej kompatybilności
       };
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));

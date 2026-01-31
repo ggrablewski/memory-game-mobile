@@ -39,13 +39,15 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
   const totalCards = cols * rows;
 
   const playSound = async (soundName) => {
-    try {
-      const soundObj = audioRefs[soundName];
-      if (soundObj?.sound) {
-        await soundObj.sound.replayAsync();
+    if (settings.withSound) {
+      try {
+        const soundObj = audioRefs[soundName];
+        if (soundObj?.sound) {
+          await soundObj.sound.replayAsync();
+        }
+      } catch (error) {
+        console.error(`Error playing sound ${soundName}:`, error);
       }
-    } catch (error) {
-      console.error(`Error playing sound ${soundName}:`, error);
     }
   };
 
@@ -275,8 +277,8 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     }
   }, [isComputerTurn, isClickable, flippedCards.length, cards, memory, possibleMoves, handleCardClick]);
 
-  const screenWidth = Dimensions.get('window').width - cutout.left - cutout.right;
-  const screenHeight = Dimensions.get('window').height - cutout.top - cutout.bottom;
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
 
   // Oblicz rozmiar karty biorąc pod uwagę dostępną przestrzeń
   // Nagłówek ma wysokość około 130px (2x imiona + wynik + marginesy 2x większe)
@@ -289,12 +291,12 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   const cardSizeByWidth = availableWidth / cols;
   const cardSizeByHeight = availableHeight / rows;
-  let cardSize = Math.min(cardSizeByWidth, cardSizeByHeight);
+  let cardSize = Math.trunc(Math.min(cardSizeByWidth, cardSizeByHeight));
 
   const boardHeight = rows * cardSize;
   const boardWidth = cols * cardSize;
   cardSize = cardSize - 4; // -4 dla marginesów
-  const verticalMargin = ((availableHeight - boardHeight)/2) - isPhone ? 20 : 0;
+  const verticalMargin = (availableHeight - boardHeight)/(isPhone ? 3 : 2);
 
   const buttonColor = settings.coverColor === 'red' 
   ? '#e36968' 
@@ -302,10 +304,10 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
 
   return (
     <View style={[styles.container, {
-      paddingTop: cutout.top,
-      paddingBottom: cutout.bottom,
-      paddingLeft: cutout.left,
-      paddingRight: cutout.right } ]}>
+        paddingBottom: isPhone ? 0 : cutout.bottom + 10,
+        paddingLeft: cutout.left + 10,
+        paddingRight: cutout.right + 10 
+      } ]}>
       {/* Przycisk powrotu - tablet (prawy górny róg) */}
       {!isPhone && (
         <TouchableOpacity style={[styles.returnButtonTablet, {
@@ -321,7 +323,7 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
       <View style={[styles.board, {
         width: boardWidth,
         height: boardHeight,
-        // marginTop: verticalMargin
+        marginTop: verticalMargin
       }]}>
         {cards.map(card => (
           <View
@@ -384,7 +386,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   modalOverlay: {
     flex: 1,

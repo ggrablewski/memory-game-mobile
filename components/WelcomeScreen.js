@@ -33,6 +33,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
   const [deckType, setDeckType] = useState(settings?.deckType || 'fv');
   const [withComputer, setWithComputer] = useState(settings?.withComputer || false);
   const [difficulty, setDifficulty] = useState(settings?.difficulty || 51);
+  const [withSound, setWithSound] = useState(settings?.withSound === false ? false : true);
   const [oldDeckEnabled, setOldDeckEnabled] = useState(settings?.oldDeckEnabled || false);
   const [humanName, setHumanName] = useState(settings?.humanName || settings?.player2 || playerNames.player2);
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(settings?.difficulty || 50, 99) / 10)]);
@@ -80,6 +81,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
       deckType,
       withComputer,
       difficulty,
+      withSound,
       oldDeckEnabled,
       humanName
     };
@@ -229,6 +231,17 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 minimumTrackTintColor="#007AFF"
                 maximumTrackTintColor="#000000"
               />
+            </View>
+
+            <Text style={styles.legend}>{t('soundFx')}</Text>
+            <View style={styles.checkboxRow}>
+              <Switch
+                value={withSound}
+                onValueChange={setWithSound}
+                trackColor={{ false: '#767577', true: '#81b0ff' }}
+                thumbColor={withSound ? '#007AFF' : '#f4f3f4'}
+              />
+              <Text style={styles.checkboxLabel}>{t(withSound ? 'turnedOn' : 'turnedOff')}</Text>
             </View>
           </View>
         </View>

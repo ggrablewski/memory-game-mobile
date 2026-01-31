@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 export default function Header({ playerNames, scores, currentPlayer, gameStarted, isPhone, topCutout }) {
   return (
-    <View style={[styles.header, { paddingTop: topCutout + 30 }]}>
+    <View style={[styles.header, { paddingTop: topCutout + (isPhone ? 30 : 0) }]}>
       <View style={styles.playerColumn}>
         <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 1 && styles.activeBorder]}>
           <Text style={styles.playerName}>
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 0,
+    marginBottom: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   playerColumn: {
