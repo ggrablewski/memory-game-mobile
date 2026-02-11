@@ -92,6 +92,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
     <View style={[styles.container, { paddingBottom: cutout.bottom, paddingLeft: cutout.left, paddingRight: cutout.right }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={[styles.form, !isPhone && styles.formLandscape]}>
+
           {/* Player names */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
             <Text style={styles.legend}>{t('players')}</Text>
@@ -108,6 +109,33 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               onChangeText={setPlayer2Name}
               editable={!withComputer}
             />
+
+            {/* Computer player */}
+            <View style={styles.nextOptionContainer}>
+              <Text style={styles.label}>{t('computerPlayer')}</Text>
+              <View style={styles.checkboxRow}>
+                <Switch
+                  value={withComputer}
+                  onValueChange={handleComputerToggle}
+                  trackColor={{ false: '#767577', true: '#81b0ff' }}
+                  thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
+                />
+                <Text style={styles.checkboxLabel}>{t('playWithComputer')}</Text>
+              </View>
+              <Text style={[styles.label, !withComputer && styles.disabledText]}>
+                {t('difficultyLevel')}: {Math.round(difficulty)}%
+              </Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={100}
+                value={difficulty}
+                onValueChange={setDifficulty}
+                disabled={!withComputer}
+                minimumTrackTintColor="#007AFF"
+                maximumTrackTintColor="#000000"
+              />
+            </View>
           </View>
 
           {/* Board size */}
@@ -152,28 +180,6 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
             </View>
           </View>
 
-          {/* Cover color */}
-          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>{t('coverColor')}</Text>
-            <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
-              <TouchableOpacity
-                style={styles.coverButton}
-                onPress={() => setCoverColor('red')}
-              >
-                <View style={[styles.radio, coverColor === 'red' && styles.radioSelected]} />
-                <Image source={require('../assets/images/cover_red.png')} style={styles.coverImage} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.coverButton}
-                onPress={() => setCoverColor('blue')}
-              >
-                <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
-                <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Deck typer */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
             <Text style={styles.legend}>{t('deckType')}</Text>
@@ -204,46 +210,42 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
             </View>
           </View>
 
-          {/* Computer options */}
+          {/* Cover color and other options */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
-            <Text style={styles.legend}>{t('computerPlayer')}</Text>
-            <View style={styles.checkboxRow}>
-              <Switch
-                value={withComputer}
-                onValueChange={handleComputerToggle}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={withComputer ? '#007AFF' : '#f4f3f4'}
-              />
-              <Text style={styles.checkboxLabel}>{t('playWithComputer')}</Text>
+            <Text style={styles.legend}>{t('coverColor')}</Text>
+            <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setCoverColor('red')}
+              >
+                <View style={[styles.radio, coverColor === 'red' && styles.radioSelected]} />
+                <Image source={require('../assets/images/cover_red.png')} style={styles.coverImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.coverButton}
+                onPress={() => setCoverColor('blue')}
+              >
+                <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
+                <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
+              </TouchableOpacity>
             </View>
 
-            <View style={styles.sliderContainer}>
-              <Text style={[styles.label, !withComputer && styles.disabledText]}>
-                {t('difficultyLevel')}: {Math.round(difficulty)}%
-              </Text>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                maximumValue={100}
-                value={difficulty}
-                onValueChange={setDifficulty}
-                disabled={!withComputer}
-                minimumTrackTintColor="#007AFF"
-                maximumTrackTintColor="#000000"
-              />
+            <View style={styles.nextOptionContainer}>
+              <Text style={[styles.legendNoMargin]}>{t('soundFx')}</Text>
+              <View style={styles.checkboxRow}>
+                <Switch
+                  value={withSound}
+                  onValueChange={setWithSound}
+                  trackColor={{ false: '#767577', true: '#81b0ff' }}
+                  thumbColor={withSound ? '#007AFF' : '#f4f3f4'}
+                />
+                <Text style={styles.checkboxLabel}>{t(withSound ? 'turnedOn' : 'turnedOff')}</Text>
+              </View>
             </View>
 
-            <Text style={styles.legend}>{t('soundFx')}</Text>
-            <View style={styles.checkboxRow}>
-              <Switch
-                value={withSound}
-                onValueChange={setWithSound}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={withSound ? '#007AFF' : '#f4f3f4'}
-              />
-              <Text style={styles.checkboxLabel}>{t(withSound ? 'turnedOn' : 'turnedOff')}</Text>
-            </View>
           </View>
+
         </View>
       </ScrollView>
 
@@ -255,6 +257,12 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
     </View>
   );
 }
+
+const legendBaseStyle = {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#333',
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -295,12 +303,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
-    marginVertical: 8,
+    marginTop: 8,
   },
+  legendNoMargin: legendBaseStyle,  
   legend: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    ...legendBaseStyle,
     marginBottom: 12,
   },
   input: {
@@ -310,6 +317,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    marginTop: 8,
   },
   inputDisabled: {
     backgroundColor: '#e0e0e0',
@@ -366,7 +374,6 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
   },
   checkboxLabel: {
     fontSize: 16,
@@ -376,7 +383,7 @@ const styles = StyleSheet.create({
   disabledText: {
     color: '#999',
   },
-  sliderContainer: {
+  nextOptionContainer: {
     marginTop: 10,
   },
   slider: {
