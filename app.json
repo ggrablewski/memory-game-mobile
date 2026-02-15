@@ -22,8 +22,8 @@
       "package": "com.ggrablewski.memorygame",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/foregroundImage.png",
-        "backgroundImage": "./assets/backgroundImage.png"
+        "foregroundImage": "./assets/foregroundImage_380.png",
+        "backgroundImage": "./assets/backgroundImage_380.png"
       },
       "screenOrientation": "nosensor",
       "edgeToEdgeEnabled": true,
