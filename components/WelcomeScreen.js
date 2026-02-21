@@ -24,6 +24,14 @@ const SIZE_OPTIONS_LANDSCAPE = [
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
 ];
 
+const ARROWS_IMAGE = require('../assets/images/arrows.png');
+const DISABLED_ARROWS_IMAGE = require('../assets/images/grey_arrows.png');
+const DECK_FRUIT = require('../assets/images/fv_menu.jpg');
+const DECK_ART = require('../assets/images/art_menu.jpg');
+const DECK_OLD = require('../assets/images/old/old_menu.jpg');
+const COVER_RED = require('../assets/images/cover_red.png');
+const COVER_BLUE = require('../assets/images/cover_blue.png');
+
 export default function WelcomeScreen({ onStartGame, previousSettings, savedSettings, playerNames, isPhone, unmuteSounds, cutout }) {
   // Użyj previousSettings jeśli istnieje (po resecie gry), w przeciwnym razie użyj savedSettings (zapisane z poprzedniej sesji)
   const settings = previousSettings || savedSettings;
@@ -56,6 +64,17 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
       setHumanName(player2Name);
     }
   }, [player2Name]);
+
+  const handleSwitchPlayers = () => {
+    if (withComputer) {
+      // Jeśli jest włączony tryb z komputerem, to nie pozwalamy na zmianę nazw graczy
+      return;
+    }
+    // Zamieniamy miejscami nazwy graczy
+    const tempName = player1Name;
+    setPlayer1Name(player2Name);
+    setPlayer2Name(tempName);
+  }
 
   const handleComputerToggle = () => {
     if (!withComputer) {
@@ -96,7 +115,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
         <View style={[styles.form, !isPhone && styles.formLandscape]}>
 
           {/* Player names */}
-          <View style={[styles.section, !isPhone && styles.sectionColumn]}>
+          <View style={[styles.section, !isPhone && styles.sectionColumn, {minWidth: 300}]}>
             <Text style={styles.legend}>{t('players')}</Text>
             <Text style={styles.label}>{t('player1Name')}</Text>
             <TextInput
@@ -104,7 +123,14 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               value={player1Name}
               onChangeText={setPlayer1Name}
             />
-            <Text style={styles.label}>{t('player2Name')}</Text>
+            <View style={styles.sectionRow}>
+              <Text style={styles.label}>{t('player2Name')}</Text>
+              <TouchableOpacity onPress={handleSwitchPlayers}>
+                {/* style={styles.arrowsButton}  */}
+                <Image source={withComputer ? DISABLED_ARROWS_IMAGE : ARROWS_IMAGE} 
+                style={styles.arrowsImage} />
+              </TouchableOpacity>
+            </View>
             <TextInput
               style={[styles.input, withComputer && styles.inputDisabled]}
               value={player2Name}
@@ -150,7 +176,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               >
                 <View style={[styles.radio, boardSize === '4' && styles.radioSelected]} />
                 <Text style={styles.radioLabel}>{SIZE_OPTIONS[0].name}</Text>
-                <Image source={SIZE_OPTIONS[0].image} style={styles.boardImage} />
+                <Image source={SIZE_OPTIONS[0].image} 
+                style={isPhone ? styles.boardImage : styles.boardImageTablet} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -159,7 +186,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               >
                 <View style={[styles.radio, boardSize === '5' && styles.radioSelected]} />
                 <Text style={styles.radioLabel}>{SIZE_OPTIONS[1].name}</Text>
-                <Image source={SIZE_OPTIONS[1].image} style={styles.boardImage} />
+                <Image source={SIZE_OPTIONS[1].image} 
+                style={isPhone ? styles.boardImage : styles.boardImageTablet} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -168,7 +196,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               >
                 <View style={[styles.radio, boardSize === '6' && styles.radioSelected]} />
                 <Text style={styles.radioLabel}>{SIZE_OPTIONS[2].name}</Text>
-                <Image source={SIZE_OPTIONS[2].image} style={styles.boardImage} />
+                <Image source={SIZE_OPTIONS[2].image} 
+                style={isPhone ? styles.boardImage : styles.boardImageTablet} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -177,7 +206,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               >
                 <View style={[styles.radio, boardSize === '9' && styles.radioSelected]} />
                 <Text style={styles.radioLabel}>{SIZE_OPTIONS[3].name}</Text>
-                <Image source={SIZE_OPTIONS[3].image} style={styles.boardImage} />
+                <Image source={SIZE_OPTIONS[3].image} 
+                style={isPhone ? styles.boardImage : styles.boardImageTablet} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -186,12 +216,13 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
               >
                 <View style={[styles.radio, boardSize === '10' && styles.radioSelected]} />
                 <Text style={styles.radioLabel}>{SIZE_OPTIONS[4].name}</Text>
-                <Image source={SIZE_OPTIONS[4].image} style={styles.boardImage} />
+                <Image source={SIZE_OPTIONS[4].image} 
+                style={isPhone ? styles.boardImage : styles.boardImageTablet} />
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Deck typer */}
+          {/* Deck type */}
           <View style={[styles.section, !isPhone && styles.sectionColumn]}>
             <Text style={styles.legend}>{t('deckType')}</Text>
             <View style={[styles.coverGroup, !isPhone && styles.coverGroupLandscape]}>
@@ -200,7 +231,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setDeckType('fv')}
               >
                 <View style={[styles.radio, deckType === 'fv' && styles.radioSelected]} />
-                <Image source={require('../assets/images/fv_menu.jpg')} style={styles.coverImage} />
+                <Image source={DECK_FRUIT} style={styles.coverImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -208,7 +239,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setDeckType('art')}
               >
                 <View style={[styles.radio, deckType === 'art' && styles.radioSelected]} />
-                <Image source={require('../assets/images/art_menu.jpg')} style={styles.coverImage} />
+                <Image source={DECK_ART} style={styles.coverImage} />
               </TouchableOpacity>
 
               {oldDeckEnabled && <TouchableOpacity
@@ -216,7 +247,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setDeckType('old')}
               >
                 <View style={[styles.radio, deckType === 'old' && styles.radioSelected]} />
-                <Image source={require('../assets/images/old/old_menu.jpg')} style={styles.coverImage} />
+                <Image source={DECK_OLD} style={styles.coverImage} />
               </TouchableOpacity>}
             </View>
           </View>
@@ -230,7 +261,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setCoverColor('red')}
               >
                 <View style={[styles.radio, coverColor === 'red' && styles.radioSelected]} />
-                <Image source={require('../assets/images/cover_red.png')} style={styles.coverImage} />
+                <Image source={COVER_RED} style={styles.coverImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -238,7 +269,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setCoverColor('blue')}
               >
                 <View style={[styles.radio, coverColor === 'blue' && styles.radioSelected]} />
-                <Image source={require('../assets/images/cover_blue.png')} style={styles.coverImage} />
+                <Image source={COVER_BLUE} style={styles.coverImage} />
               </TouchableOpacity>
             </View>
 
@@ -303,6 +334,10 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 15,
   },
+  sectionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   sectionColumn: {
     flexShrink: 1,
     flexGrow: 0,
@@ -329,6 +364,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     marginTop: 8,
+    width: '85%',
   },
   inputDisabled: {
     backgroundColor: '#e0e0e0',
@@ -358,7 +394,17 @@ const styles = StyleSheet.create({
     color: '#333',
     marginRight: 10,
   },
+  arrowsImage: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
   boardImage: {
+    width: 40,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  boardImageTablet: {
     width: 50,
     height: 40,
     resizeMode: 'contain',
