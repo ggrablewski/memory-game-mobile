@@ -12,14 +12,19 @@ export default function Header({ playerNames, scores, currentPlayer, gameStarted
         </View>
       </View>
       <View style={styles.scoreColumn}>
-        <Text style={styles.score}>{scores.player1}</Text>
+        <Text style={styles.score}   
+          numberOfLines={2}
+          adjustsFontSizeToFit={true}
+        >{scores.player1}</Text>
         <Text style={styles.separator}>:</Text>
         <Text style={styles.score}>{scores.player2}</Text>
       </View>
       <View style={styles.playerColumn}>
         <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 2 && styles.activeBorder]}>
-          <Text style={styles.playerName}>
-            {playerNames.player2}
+          <Text style={styles.playerName}
+            numberOfLines={2}
+            adjustsFontSizeToFit={true}
+          >{playerNames.player2}
           </Text>
         </View>
       </View>
