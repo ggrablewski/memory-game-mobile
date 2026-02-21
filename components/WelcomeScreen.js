@@ -10,6 +10,7 @@ const KOMPUTER_NAME_LIST = [
 
 const SIZE_OPTIONS_PORTRAIT = [
   { name: "3×4", image: require('../assets/images/3x4_transparent.png') },
+  { name: "4×5", image: require('../assets/images/4x5_transparent.png') },
   { name: "5×6", image: require('../assets/images/5x6_transparent.png') },
   { name: "6×9", image: require('../assets/images/6x9_transparent.png') },
   { name: "8×10", image: require('../assets/images/8x10_transparent.png') }
@@ -17,6 +18,7 @@ const SIZE_OPTIONS_PORTRAIT = [
 
 const SIZE_OPTIONS_LANDSCAPE = [
   { name: "4×3", image: require('../assets/images/4x3_transparent.png') },
+  { name: "5×4", image: require('../assets/images/5x4_transparent.png') },
   { name: "6×5", image: require('../assets/images/6x5_transparent.png') },
   { name: "9×6", image: require('../assets/images/9x6_transparent.png') },
   { name: "10×8", image: require('../assets/images/10x8_transparent.png') }
@@ -153,11 +155,20 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
 
               <TouchableOpacity
                 style={styles.radioButton}
+                onPress={() => setBoardSize('5')}
+              >
+                <View style={[styles.radio, boardSize === '5' && styles.radioSelected]} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[1].name}</Text>
+                <Image source={SIZE_OPTIONS[1].image} style={styles.boardImage} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.radioButton}
                 onPress={() => setBoardSize('6')}
               >
                 <View style={[styles.radio, boardSize === '6' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>{SIZE_OPTIONS[1].name}</Text>
-                <Image source={SIZE_OPTIONS[1].image} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[2].name}</Text>
+                <Image source={SIZE_OPTIONS[2].image} style={styles.boardImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -165,8 +176,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setBoardSize('9')}
               >
                 <View style={[styles.radio, boardSize === '9' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>{SIZE_OPTIONS[2].name}</Text>
-                <Image source={SIZE_OPTIONS[2].image} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[3].name}</Text>
+                <Image source={SIZE_OPTIONS[3].image} style={styles.boardImage} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -174,8 +185,8 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
                 onPress={() => setBoardSize('10')}
               >
                 <View style={[styles.radio, boardSize === '10' && styles.radioSelected]} />
-                <Text style={styles.radioLabel}>{SIZE_OPTIONS[3].name}</Text>
-                <Image source={SIZE_OPTIONS[3].image} style={styles.boardImage} />
+                <Text style={styles.radioLabel}>{SIZE_OPTIONS[4].name}</Text>
+                <Image source={SIZE_OPTIONS[4].image} style={styles.boardImage} />
               </TouchableOpacity>
             </View>
           </View>

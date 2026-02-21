@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'rea
 import { t } from '../i18n';
 import Card from './Card';
 
-const ROZMIARY_PORTRAIT = { '4': [3, 4], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
-const ROZMIARY_LANDSCAPE = { '4': [4, 3], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
+const ROZMIARY_PORTRAIT = { '4': [3, 4], '5': [4, 5], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
+const ROZMIARY_LANDSCAPE = { '4': [4, 3], '5': [5, 4], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
 
 const losuj = (max) => Math.floor(Math.random() * max);
 const numer = (x) => x.toString().padStart(2, "0");
