@@ -178,6 +178,8 @@ export default function Card({ card, isFlipped, isMatched, showAllCards, coverCo
       disabled={isFlipped || showAllCards}
       activeOpacity={0.7}
       style={styles.card}
+      accessibilityRole="button"
+      accessibilityLabel={isFlipped ? `Card ${card.value} revealed` : "Card hidden"}
     >
       <Image source={imageSource} style={styles.cardImage} resizeMode="contain" />
     </TouchableOpacity>

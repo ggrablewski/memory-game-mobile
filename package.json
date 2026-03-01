@@ -6,7 +6,10 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -25,7 +28,16 @@
   },
   "private": true,
   "devDependencies": {
+    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
     "@types/react": "~19.1.10",
+    "babel-jest": "^30.2.0",
+    "babel-preset-expo": "^54.0.10",
+    "jest": "^30.2.0",
+    "react-native-testing-mocks": "^1.7.0",
+    "react-test-renderer": "^19.1.0",
     "typescript": "~5.9.2"
   }
 }
