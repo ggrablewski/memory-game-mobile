@@ -4,6 +4,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import mobileAds from 'react-native-google-mobile-ads';
 import { useImagePreloader } from './hooks/useImagePreloader';
 import { useSoundPreloader } from './hooks/useSoundPreloader';
 import { t } from './i18n';
@@ -32,9 +33,21 @@ function AppContent() {
   // insets.top = 30; // Test
   // insets.bottom = 100; // Test
 
+  // Inicjalizacja Google AdMob
+  useEffect(() => {
+    mobileAds()
+      .initialize()
+      .then(adapterStatuses => {
+        console.log('AdMob initialized:', adapterStatuses);
+      })
+      .catch(error => {
+        console.error('AdMob initialization error:', error);
+      });
+  }, []);
+
   // Odczytaj zapisane ustawienia przy starcie aplikacji
   useEffect(() => {
-    async function loadSettings() {      
+    async function loadSettings() {
       try {
         // Spróbuj odczytać nowe ustawienia
         let savedData = await AsyncStorage.getItem(STORAGE_KEY);

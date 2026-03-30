@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ignaś Memo Pairs",
     "slug": "ignas-memory-game",
-    "version": "1.1.3",
+    "version": "1.2.0",
     "icon": "./assets/ikona_512.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -36,7 +36,14 @@
     "plugins": [
       "expo-asset",
       "expo-audio",
-      "expo-localization"
+      "expo-localization",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7525157017754869~1994598390",
+          "iosAppId": "ca-app-pub-7525157017754869~2042699856"
+        }
+      ]
     ],
     "extra": {
       "eas": {

@@ -1,34 +1,39 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import AdBanner from './AdBanner';
 
 export default function Header({ playerNames, scores, currentPlayer, gameStarted, isPhone, topCutout }) {
   return (
-    <View style={[styles.header, { paddingTop: topCutout + (isPhone ? 30 : 0) }]}>
-      <View style={styles.playerColumn}>
-        <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 1 && styles.activeBorder]}>
-          <Text style={styles.playerName}>
-            {playerNames.player1}
-          </Text>
+    !gameStarted 
+    ? (<AdBanner />) 
+    : (
+      <View style={[styles.header, { paddingTop: topCutout + (isPhone ? 30 : 0) }]}>
+        <View style={styles.playerColumn}>
+          <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 1 && styles.activeBorder]}>
+            <Text style={styles.playerName}>
+              {playerNames.player1}
+            </Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.scoreColumn}>
-        <Text style={styles.score}   
-          numberOfLines={2}
-          adjustsFontSizeToFit={true}
-        >{scores.player1}</Text>
-        <Text style={styles.separator}>:</Text>
-        <Text style={styles.score}>{scores.player2}</Text>
-      </View>
-      <View style={styles.playerColumn}>
-        <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 2 && styles.activeBorder]}>
-          <Text style={styles.playerName}
+        <View style={styles.scoreColumn}>
+          <Text style={styles.score}   
             numberOfLines={2}
             adjustsFontSizeToFit={true}
-          >{playerNames.player2}
-          </Text>
+          >{scores.player1}</Text>
+          <Text style={styles.separator}>:</Text>
+          <Text style={styles.score}>{scores.player2}</Text>
+        </View>
+        <View style={styles.playerColumn}>
+          <View style={[styles.playerNameBorder, gameStarted && currentPlayer === 2 && styles.activeBorder]}>
+            <Text style={styles.playerName}
+              numberOfLines={2}
+              adjustsFontSizeToFit={true}
+            >{playerNames.player2}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    )
   );
 }
 
