@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { t } from '../i18n';
 import Card from './Card';
+import { checkAchievements } from '../services/achievementsService';
 
 const ROZMIARY_PORTRAIT = { '4': [3, 4], '5': [4, 5], '6': [5, 6], '9': [6, 9], '10': [8, 10] };
 const ROZMIARY_LANDSCAPE = { '4': [4, 3], '5': [5, 4], '6': [6, 5], '9': [9, 6], '10': [10, 8] };
@@ -89,28 +90,47 @@ export default function GameBoard({ settings, currentPlayer, playerNames, scores
     return settings.withComputer && currentPlayer === 2;
   }, [settings.withComputer, currentPlayer]);
 
-  const endGame = useCallback((finalScores = scores) => {
+  const endGame = useCallback(async (finalScores = scores) => {
     playSound('cheers');
 
     // Odkryj wszystkie karty
     setShowAllCards(true);
 
     let message;
+    let winnerPlayer = null;
     if (finalScores.player1 === finalScores.player2) {
       message = t('draw');
     } else {
       const winner = finalScores.player1 > finalScores.player2 ? playerNames.player1 : playerNames.player2;
+      winnerPlayer = finalScores.player1 > finalScores.player2 ? 'player1' : 'player2';
       const firstWord = winner.split(' ')[0];
       const koncowka = ['a', 'A'].includes(firstWord[firstWord.length - 1]) ? 'a' : '';
       const winnerText = koncowka === 'a' ? t('winnerF') : t('winnerM');
       message = `${winnerText}\n${winner}`;
     }
 
+    // Sprawdź osiągnięcia (tylko jeśli był wygrany)
+    if (winnerPlayer) {
+      try {
+        const newAchievements = await checkAchievements(settings, winnerPlayer);
+
+        // Jeśli odblokowano nowe osiągnięcia, dodaj informację do wiadomości
+        if (newAchievements.length > 0) {
+          const achievementText = newAchievements
+            .map(a => `${a.icon} ${t(a.titleKey)}`)
+            .join('\n');
+          message += `\n\n${t('achievementUnlocked')}\n${achievementText}`;
+        }
+      } catch (error) {
+        console.error('Error checking achievements:', error);
+      }
+    }
+
     // Pokaż odkryte karty przez 3 sekundy, potem wyświetl modal z wynikiem
     setTimeout(() => {
       setShowMessage({ type: 'endGame', text: message });
     }, 3000);
-  }, [scores, playerNames]);
+  }, [scores, playerNames, settings]);
 
   const showPlayerMessage = useCallback((player) => {
     setShowMessage({

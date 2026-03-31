@@ -22,6 +22,26 @@ const translations = {
     startButton: 'Zaczynamy!',
     congrats: 'Brawo!',
     escape: 'Koniec',
+    // Osiągnięcia
+    achievements: 'Osiągnięcia',
+    points: 'pkt',
+    close: 'Zamknij',
+    achievementUnlocked: 'Osiągnięcie odblokowane!',
+    // Tytuły osiągnięć
+    achievement_beat_mikolajek_5x6_title: 'Zwycięstwo nad Mikołajkiem',
+    achievement_beat_mikolajek_5x6_desc: 'Pokonaj Mikołajka na planszy 5×6',
+    achievement_beat_kaczka_5x6_title: 'Pokonaj Kaczkę Katastrofę',
+    achievement_beat_kaczka_5x6_desc: 'Pokonaj Kaczkę Katastrofę na planszy 5×6',
+    achievement_beat_kuleczka_4x5_title: 'Mistrz małej planszy',
+    achievement_beat_kuleczka_4x5_desc: 'Pokonaj Pana Kuleczkę na planszy 4×5',
+    achievement_beat_kuleczka_5x6_title: 'Mistrz średniej planszy',
+    achievement_beat_kuleczka_5x6_desc: 'Pokonaj Pana Kuleczkę na planszy 5×6',
+    achievement_beat_mikolajek_6x9_title: 'Mistrz dużej planszy',
+    achievement_beat_mikolajek_6x9_desc: 'Pokonaj Mikołajka na planszy 6×9',
+    achievement_beat_mikolajek_8x10_title: 'Mistrz gigantycznej planszy',
+    achievement_beat_mikolajek_8x10_desc: 'Pokonaj Mikołajka na planszy 8×10',
+    achievement_beat_kuleczka_5x6_art_title: 'Mistrz sztuki',
+    achievement_beat_kuleczka_5x6_art_desc: 'Pokonaj Pana Kuleczkę na planszy 5×6 w talii artystycznej',
   },
   de: {
     players: 'Spieler',
@@ -198,6 +218,26 @@ const translations = {
     startButton: 'Let\'s start!',
     congrats: 'Congratulations!',
     escape: 'Exit',
+    // Achievements
+    achievements: 'Achievements',
+    points: 'pts',
+    close: 'Close',
+    achievementUnlocked: 'Achievement Unlocked!',
+    // Achievement titles
+    achievement_beat_mikolajek_5x6_title: 'Victory over Mikołajek',
+    achievement_beat_mikolajek_5x6_desc: 'Beat Mikołajek on 5×6 board',
+    achievement_beat_kaczka_5x6_title: 'Beat Kaczka Katastrofa',
+    achievement_beat_kaczka_5x6_desc: 'Beat Kaczka Katastrofa on 5×6 board',
+    achievement_beat_kuleczka_4x5_title: 'Small Board Master',
+    achievement_beat_kuleczka_4x5_desc: 'Beat Pan Kuleczka on 4×5 board',
+    achievement_beat_kuleczka_5x6_title: 'Medium Board Master',
+    achievement_beat_kuleczka_5x6_desc: 'Beat Pan Kuleczka on 5×6 board',
+    achievement_beat_mikolajek_6x9_title: 'Large Board Master',
+    achievement_beat_mikolajek_6x9_desc: 'Beat Mikołajek on 6×9 board',
+    achievement_beat_mikolajek_8x10_title: 'Giant Board Master',
+    achievement_beat_mikolajek_8x10_desc: 'Beat Mikołajek on 8×10 board',
+    achievement_beat_kuleczka_5x6_art_title: 'Art Master',
+    achievement_beat_kuleczka_5x6_art_desc: 'Beat Pan Kuleczka on 5×6 board with artistic deck',
   }
 };
 

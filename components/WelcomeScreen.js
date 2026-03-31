@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { t } from '../i18n';
+import AchievementsScreen from './AchievementsScreen';
 
 const KOMPUTER_NAME_LIST = [
   "Kleofas", "Euzebiusz", "Rufus", "Gotfryd", "Alcest", "Mikołajek", 
@@ -47,6 +48,7 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
   const [oldDeckEnabled, setOldDeckEnabled] = useState(settings?.oldDeckEnabled || false);
   const [humanName, setHumanName] = useState(settings?.humanName || settings?.player2 || playerNames.player2);
   const [computerName, setComputerName] = useState(KOMPUTER_NAME_LIST[Math.floor(Math.min(settings?.difficulty || 50, 99) / 10)]);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   const SIZE_OPTIONS = isPhone ? SIZE_OPTIONS_PORTRAIT : SIZE_OPTIONS_LANDSCAPE;
 
@@ -292,10 +294,20 @@ export default function WelcomeScreen({ onStartGame, previousSettings, savedSett
       </ScrollView>
 
       <View style={styles.footer}>
+        <TouchableOpacity style={styles.achievementsButton} onPress={() => setShowAchievements(true)}>
+          <Text style={styles.achievementsButtonText}>🏆 {t('achievements')}</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.startButton} onPress={handleStart}>
           <Text style={styles.startButtonText}>{t('startButton')}</Text>
         </TouchableOpacity>
       </View>
+
+      <AchievementsScreen
+        visible={showAchievements}
+        onClose={() => setShowAchievements(false)}
+        isPhone={isPhone}
+      />
     </View>
   );
 }
@@ -446,6 +458,23 @@ const styles = StyleSheet.create({
   slider: {
     width: '100%',
     height: 40,
+  },
+  achievementsButton: {
+    backgroundColor: '#FF9800',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  achievementsButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   startButton: {
     backgroundColor: '#4CAF50',
