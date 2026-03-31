@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ignaś Memo Pairs",
     "slug": "ignas-memory-game",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "icon": "./assets/ikona_512.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,

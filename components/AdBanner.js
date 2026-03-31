@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import mobileAds, { BannerAd, BannerAdSize, TestIds, MaxAdContentRating } from 'react-native-google-mobile-ads';
 
 const AdBanner = () => {
   // W trybie development używamy testowych ID
@@ -12,6 +12,17 @@ const AdBanner = () => {
         android: 'ca-app-pub-7525157017754869/2769458160',
         ios: 'ca-app-pub-7525157017754869/1320645123',
       });
+
+async function initAds() {
+  await mobileAds().setRequestConfiguration({
+    tagForChildDirectedTreatment: true,
+    maxAdContentRating: MaxAdContentRating.G,
+  });
+
+  await mobileAds().initialize();
+}
+
+initAds();
 
   return (
     <View style={styles.container}>
